@@ -39,3 +39,7 @@ Route::get('bankAccounts/accountStatement/{bankAccount}', [
 Route::resource('bankAccounts', 'BankAccountController');
 
 Route::resource('creditCards', 'CreditCardController');
+
+Route::resource('creditCardInvoices', 'CreditCardInvoiceController');
+
+Route::resource('paymentForms', 'PaymentFormController');

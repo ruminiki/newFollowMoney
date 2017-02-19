@@ -1,0 +1,102 @@
+[
+	{
+		"name": "id",
+		"dbType": "increments",
+		"htmlType": "",
+		"validations": "",
+		"searchable": false,
+		"fillable": false,
+		"primary": true,
+		"inForm": false,
+		"inIndex": false
+	},
+	{
+		"name": "emission_date",
+	    "dbType": "date",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "maturity_date",
+	    "dbType": "date",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "value",
+	    "dbType": "decimal(9,2)",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "amount_paid",
+	    "dbType": "decimal(9,2)",
+	    "htmlType": "text",
+	    "validations": "",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "reference_month",
+	    "dbType": "string,20",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "reference_year",
+	    "dbType": "integer",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "status",
+	    "dbType": "string,20",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": true,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "credit_card_id",
+	    "dbType": "integer:unsigned:nullable:foreign,credit_cards,id",
+	    "htmlType": "text",
+	    "relation": "mt1,CreditCard,credit_card_id,id"
+	},
+	{
+		"name": "user_id",
+	    "dbType": "integer:unsigned:foreign,users,id",
+	    "htmlType": "text",
+	    "relation": "mt1,User,user_id,id"
+	}
+]

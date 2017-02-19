@@ -1,0 +1,142 @@
+[
+	{
+		"name": "id",
+		"dbType": "increments",
+		"htmlType": "",
+		"validations": "",
+		"searchable": false,
+		"fillable": false,
+		"primary": true,
+		"inForm": false,
+		"inIndex": false
+	},
+	{
+		"name": "description",
+	    "dbType": "string,100",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": true,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "emission_date",
+	    "dbType": "date",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "maturity_date",
+	    "dbType": "date",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "value",
+	    "dbType": "decimal(9,2)",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "operation",
+	    "dbType": "string,30",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "status",
+	    "dbType": "string,20",
+	    "htmlType": "text",
+	    "validations": "required",
+	    "searchable": true,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": true,
+	    "inIndex": false
+	},
+	{
+		"name": "portion_number",
+	    "dbType": "string,20",
+	    "htmlType": "text",
+	    "validations": "",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": false,
+	    "inIndex": false
+	},
+	{
+		"name": "transfer_hash",
+	    "dbType": "string,100",
+	    "htmlType": "text",
+	    "validations": "",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": false,
+	    "inIndex": false
+	},
+	{
+		"name": "portion_hash",
+	    "dbType": "string,100",
+	    "htmlType": "text",
+	    "validations": "",
+	    "searchable": false,
+	    "fillable": true,
+	    "primary": false,
+	    "inForm": false,
+	    "inIndex": false
+	},
+	{
+		"name": "payment_form_id",
+	    "dbType": "integer:unsigned:nullable:foreign,payment_forms,id",
+	    "htmlType": "text",
+	    "relation": "mt1,PaymentForm,payment_form,id"
+	},
+	{
+		"name": "category_id",
+	    "dbType": "integer:unsigned:nullable:foreign,categories,id",
+	    "htmlType": "text",
+	    "relation": "mt1,Category,category_id,id"
+	},
+	{
+		"name": "bank_account_id",
+	    "dbType": "integer:unsigned:nullable:foreign,bank_accounts,id",
+	    "htmlType": "text",
+	    "relation": "mt1,BankAccount,bank_account_id,id"
+	},
+	{
+		"name": "movement_origin_id",
+	    "dbType": "integer:unsigned:nullable:foreign,movements,id",
+	    "htmlType": "text",
+	    "relation": "mt1,Movement,movement_origin_id,id"
+	},
+	{
+		"name": "user_id",
+	    "dbType": "integer:unsigned:foreign,users,id",
+	    "htmlType": "text",
+	    "relation": "mt1,User,user_id,id"
+	}
+]

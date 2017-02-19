@@ -19,6 +19,9 @@
             affixesStay: true}
         );
 
+        $('#description').keyup(function(){
+            this.value = this.value.toUpperCase();
+        });
 
     </script>
 @endpush

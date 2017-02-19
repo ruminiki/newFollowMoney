@@ -1,3 +1,13 @@
+@push('scripts')
+    <script>
+
+        $('#description').keyup(function(){
+            this.value = this.value.toUpperCase();
+        });
+
+    </script>
+@endpush
+
 <!-- Description Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('description', 'Description:') !!}
@@ -10,7 +20,7 @@
 	{!! Form::select('category_superior_id', 
 					 $categories->all('description'), 
 					 empty($category->categorySuperior) ? -1 : $category->categorySuperior->id, 
-					 ['placeholder' => 'PLEASE SELECT...', 'class' => 'form-control']) !!}
+					 ['placeholder' => 'SELECT...', 'class' => 'form-control']) !!}
 </div>
 
 <!-- Submit Field -->

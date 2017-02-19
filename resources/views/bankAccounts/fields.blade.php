@@ -1,3 +1,17 @@
+@push('scripts')
+    <script src="/js/jasny-bootstrap.min.js" type="text/javascript"></script>
+
+    <script>
+        $('#number').inputmask({
+            mask: '999999-9'
+        });
+
+        $('#description').keyup(function(){
+            this.value = this.value.toUpperCase();
+        });
+
+    </script>
+@endpush
 <!-- Description Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('description', 'Description:') !!}
