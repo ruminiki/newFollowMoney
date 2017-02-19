@@ -33,3 +33,7 @@ Route::get('/home', 'HomeController@index');
 Route::resource('categories', 'CategoryController');
 
 Route::resource('bankAccounts', 'BankAccountController');
+
+
+
+Route::resource('creditCards', 'CreditCardController');

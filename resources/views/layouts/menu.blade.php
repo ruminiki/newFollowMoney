@@ -6,3 +6,8 @@
     <a href="{!! route('bankAccounts.index') !!}"><i class="fa fa-edit"></i><span>Bank Accounts</span></a>
 </li>
 
+
+<li class="{{ Request::is('creditCards*') ? 'active' : '' }}">
+    <a href="{!! route('creditCards.index') !!}"><i class="fa fa-edit"></i><span>Credit Cards</span></a>
+</li>
+
