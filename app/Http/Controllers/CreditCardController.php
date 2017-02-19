@@ -155,10 +155,11 @@ class CreditCardController extends AppBaseController
     }
 
     private function formatLimit($limit){
-
         $limit = preg_replace('/[^0-9,]/s', '', $limit);
         $limit = str_replace(',', '.', $limit);
-
+        if ( strpos($limit, '.') == FALSE ){
+            $limit = substr($limit,0,-2) . '.' . substr($limit,-2);
+        }
         return $limit;
     }
 }

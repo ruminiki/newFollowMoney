@@ -56,9 +56,7 @@ class CategoryController extends AppBaseController
     public function store(CreateCategoryRequest $request)
     {
         $input = $request->all();
-        
         $input['user_id'] = Auth::id();
-
         $category = $this->categoryRepository->create($input);
 
         Flash::success('Category saved successfully.');

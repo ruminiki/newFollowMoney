@@ -18,3 +18,7 @@
     <a href="{!! route('paymentForms.index') !!}"><i class="fa fa-edit"></i><span>Payment Forms</span></a>
 </li>
 
+<li class="{{ Request::is('movements*') ? 'active' : '' }}">
+    <a href="{!! route('movements.index') !!}"><i class="fa fa-edit"></i><span>Movements</span></a>
+</li>
+
