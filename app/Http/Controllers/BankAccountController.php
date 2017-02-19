@@ -13,6 +13,7 @@ use Response;
 use Auth;
 use DB;
 use App\Models\AccountStatement;
+use App\Models\Movement;
 use Yajra\Datatables\Datatables;
 
 class BankAccountController extends AppBaseController
@@ -164,19 +165,8 @@ class BankAccountController extends AppBaseController
             return redirect(route('bankAccounts.index'));
         }
 
-        $bank_accounts = DB::table('bank_accounts')->get();
-        $account_statements = array();
-        foreach ($bank_accounts as $bank_account){
-            $account_statement = new AccountStatement();
-            $account_statement->date = '01/01/2000';
-            $account_statement->movement = 1;
-            $account_statement->type = 'DEBIT';
-            $account_statement->value = 10;
-            array_push($account_statements, $account_statement);
-        }
+        $movements = Movement::whereRaw('bank_account_id = ? and user_id = ?', [$id, Auth::id()])->get();
 
-        //$data_table = Datatables::of($account_statements)->make(true);
-        
-        return view('bankAccounts.account_statement')->with('account_statements', $account_statements)->with('bankAccount', $bank_account);
+        return view('bankAccounts.account_statement')->with('movements', $movements)->with('bankAccount', $bankAccount);
     }
 }

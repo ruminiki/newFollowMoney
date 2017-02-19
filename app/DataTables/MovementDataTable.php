@@ -95,14 +95,13 @@ class MovementDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'Description' => ['name' => 'description', 'data' => 'description', 'width' => '40%'],
+            'Description' => ['name' => 'description', 'data' => 'description', 'width' => '30'],
             'Emission' => ['name' => 'emission_date', 'data' => 'emission_date', 'width' => '8%'],
             'Maturity' => ['name' => 'maturity_date', 'data' => 'maturity_date', 'width' => '8%'],
             'Operation' => ['name' => 'operation', 'data' => 'operation', 'width' => '8%'],
             'Value' => ['name' => 'value', 'data' => 'value', 'width' => '8%'],
-            'Payment Form' => ['name' => 'payment_form', 'data' => 'payment_form', 'width' => '15%'],
-            'Category' => ['name' => 'category', 'data' => 'category', 'width' => '15%'],
-            'Bank Account' => ['name' => 'bank_account', 'data' => 'bank_account', 'width' => '15%']
+            'Category' => ['name' => 'category', 'data' => 'category', 'width' => '18%'],
+            'Bank Account' => ['name' => 'bank_account', 'data' => 'bank_account', 'width' => '18']
         ];
     }
 
@@ -116,3 +115,4 @@ class MovementDataTable extends DataTable
         return 'movements';
     }
 }
+

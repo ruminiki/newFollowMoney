@@ -18,17 +18,20 @@
                 <table class="table table-bordered" id="account-statements-table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Movement</th>
-                            <th>Type</th>
+                            <th>Emission</th>
+                            <th>Expiration</th>
+                            <th>Operation</th>
+                            <th>Status</th>
                             <th>Value</th>
                         </tr>
                     </thead>
-                    @foreach($account_statements as $key => $array)
+                    @foreach($movements as $movement)
                         <tr>
-                        @foreach($array as $movement => $value)
-                            <td>{{ $value }}</td>
-                        @endforeach
+                            <td>{{ $movement->emission_date }}</td>
+                            <td>{{ $movement->maturity_date }}</td>
+                            <td>{{ $movement->operation }}</td>
+                            <td>{{ $movement->status }}</td>
+                            <td>{{ $movement->value }}</td>
                         </tr>
                     @endforeach
                 </table>
