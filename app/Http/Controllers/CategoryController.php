@@ -12,8 +12,6 @@ use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 use App\Models\Category;
-use Yajra\Datatables\Datatables;
-use DB;
 use Auth;
 
 class CategoryController extends AppBaseController

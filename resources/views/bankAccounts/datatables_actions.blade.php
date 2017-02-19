@@ -11,5 +11,9 @@
         'class' => 'btn btn-danger btn-xs',
         'onclick' => "return confirm('Are you sure?')"
     ]) !!}
+
+    <a href="{{ route('bankAccounts.accountStatement', $id) }}" class='btn btn-default btn-xs'>
+        <i class="glyphicon glyphicon-list-alt"></i>
+    </a>
 </div>
 {!! Form::close() !!}

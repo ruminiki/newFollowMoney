@@ -2,11 +2,12 @@
 
 namespace App\DataTables;
 
-use App\Models\BankAccount;
+use App\Models\AccountStatement;
 use Form;
 use Yajra\Datatables\Services\DataTable;
+use DB;
 
-class BankAccountDataTable extends DataTable
+class AccountStatementDataTable extends DataTable
 {
 
     /**
@@ -14,16 +15,8 @@ class BankAccountDataTable extends DataTable
      */
     public function ajax()
     {
-        return $this->datatables
-            ->eloquent($this->query())
-            ->addColumn('action', 'bankAccounts.datatables_actions')
-             ->editColumn('updated_at', function ($category) {
-                return !empty($category->updated_at) ? $category->updated_at->format('d/m/Y H:m') : '';
-            })
-            ->editColumn('created_at', function ($category) {
-                    return !empty($category->created_at) ? $category->created_at->format('d/m/Y H:m') : '';
-            })
-            ->make(true);
+        return $this->datatables->of($this->query())->make(true);
+
     }
 
     /**
@@ -33,9 +26,18 @@ class BankAccountDataTable extends DataTable
      */
     public function query()
     {
-        $bankAccounts = BankAccount::query();
+        $bank_accounts = DB::table('bank_accounts')->get();
+        $account_statements = array();
+        foreach ($bank_accounts as $bank_account){
+            $account_statement = new AccountStatement();
+            $account_statement->date = now();
+            $account_statement->movement = 1;
+            $account_statement->type = 'DEBIT';
+            $account_statement->value = 10;
+            array_push($account_statements, $account_statement);
+        }
 
-        return $this->applyScopes($bankAccounts);
+        return $this->applyScopes($account_statements);
     }
 
     /**
@@ -82,10 +84,10 @@ class BankAccountDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'description' => ['name' => 'description', 'data' => 'description'],
-            'number' => ['name' => 'number', 'data' => 'number'],
-            'created_at' => ['name' => 'created_at', 'data' => 'created_at'],
-            'updated_at' => ['name' => 'updated_at', 'data' => 'updated_at'],
+            'date' => ['name' => 'date', 'data' => 'date'],
+            'movement' => ['name' => 'movement', 'data' => 'movement'],
+            'type' => ['name' => 'type', 'data' => 'type'],
+            'value' => ['name' => 'value', 'data' => 'value']
         ];
     }
 
@@ -96,6 +98,6 @@ class BankAccountDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'bankAccounts';
+        return 'accountStatements';
     }
 }

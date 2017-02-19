@@ -11,6 +11,9 @@ use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
 use Auth;
+use DB;
+use App\Models\AccountStatement;
+use Yajra\Datatables\Datatables;
 
 class BankAccountController extends AppBaseController
 {
@@ -150,5 +153,30 @@ class BankAccountController extends AppBaseController
         Flash::success('Bank Account deleted successfully.');
 
         return redirect(route('bankAccounts.index'));
+    }
+
+    public function accountStatement($id){
+        $bankAccount = $this->bankAccountRepository->findWithoutFail($id);
+
+        if (empty($bankAccount)) {
+            Flash::error('Bank Account not found');
+
+            return redirect(route('bankAccounts.index'));
+        }
+
+        $bank_accounts = DB::table('bank_accounts')->get();
+        $account_statements = array();
+        foreach ($bank_accounts as $bank_account){
+            $account_statement = new AccountStatement();
+            $account_statement->date = '01/01/2000';
+            $account_statement->movement = 1;
+            $account_statement->type = 'DEBIT';
+            $account_statement->value = 10;
+            array_push($account_statements, $account_statement);
+        }
+
+        //$data_table = Datatables::of($account_statements)->make(true);
+        
+        return view('bankAccounts.account_statement')->with('account_statements', $account_statements)->with('bankAccount', $bank_account);
     }
 }

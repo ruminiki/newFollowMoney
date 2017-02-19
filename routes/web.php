@@ -32,8 +32,10 @@ Route::get('/home', 'HomeController@index');
 ]);*/
 Route::resource('categories', 'CategoryController');
 
+Route::get('bankAccounts/accountStatement/{bankAccount}', [
+  'as' => 'bankAccounts.accountStatement', 
+  'uses' => 'BankAccountController@accountStatement'
+]);
 Route::resource('bankAccounts', 'BankAccountController');
-
-
 
 Route::resource('creditCards', 'CreditCardController');
