@@ -16,3 +16,9 @@
     <p>{!! $bankAccount->number !!}</p>
 </div>
 
+<!-- User Id Field -->
+<div class="form-group">
+    {!! Form::label('user_id', 'User Id:') !!}
+    <p>{!! $bankAccount->user_id !!}</p>
+</div>
+

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\CategoryDataTable;
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Repositories\CategoryRepository;
@@ -13,8 +14,9 @@ use Response;
 use App\Models\Category;
 use Yajra\Datatables\Datatables;
 use DB;
+use Auth;
 
-class CategoryController extends Controller
+class CategoryController extends AppBaseController
 {
     /** @var  categoryRepository */
     private $categoryRepository;
@@ -30,15 +32,9 @@ class CategoryController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request)
+    public function index(CategoryDataTable $categoryDataTable)
     {
-        /*$this->categoryRepository->pushCriteria(new RequestCriteria($request));
-        $categories = $this->categoryRepository->paginate(20);
-
-        return view('categories.index')
-            ->with('categories', $categories);*/
-
-        return view('categories.index');
+        return $categoryDataTable->render('categories.index');
     }
 
     /**
@@ -48,7 +44,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $categories = Category::pluck('description', 'id');
+        $categories = Category::orderBy('description', 'asc')->pluck('description', 'id');
         return view('categories.create')->with('categories', $categories);
     }
 
@@ -63,6 +59,8 @@ class CategoryController extends Controller
     {
         $input = $request->all();
         
+        $input['user_id'] = Auth::id();
+
         $category = $this->categoryRepository->create($input);
 
         Flash::success('Category saved successfully.');
@@ -100,7 +98,7 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $category = $this->categoryRepository->findWithoutFail($id);
-        $categories = Category::pluck('description', 'id');
+        $categories = Category::orderBy('description', 'asc')->pluck('description', 'id');
         
         if (empty($category)) {
             Flash::error('Category not found');
@@ -161,70 +159,28 @@ class CategoryController extends Controller
     }
 
 
-    public function search()
+   /* public function search()
     {
-        // Gets the query string from our form submission 
-        //$query = $request['search'];
-        // Returns an array of articles that have the query string located somewhere within 
-        // our articles titles. Paginates them so we can break up lots of search results.
-        //$categories = DB::table('categories')->where('description', 'LIKE', '%' . $query . '%')->paginate(20);
-            
-        // returns a view and passes the view the list of articles and the original query.
-        //return view('categories.index', compact('categories', 'query'));
-
-        //return redirect(route('categories.index'));
-
-        //$categories = Category::with('categorySuperior')->select('categories.*');
-
+        
         $categories = Category::from( DB::raw('categories as categories') )
         ->leftJoin( DB::raw('categories as sup'), DB::raw( 'sup.id' ), '=', DB::raw( 'categories.category_superior_id' ))
         ->select(DB::raw('categories.*, sup.description as category_superior'))
         ->orderBy('categories.description', 'asc')
         ->get();
 
-        
-
-        //categories.id, categories.description, categories.created_at, categories.updated_at, categories.user_id
-        //, superior.id as id_superior, superior.description as description_superior
-        
+       
         return Datatables::of($categories)
         ->addColumn('actions', function ($category) {
-            return '<a href="categories/'.$category->id.'/edit/" 
-                        class="btn btn-default btn-xs">
-                        <i class="glyphicon glyphicon-edit"></i>Edit</a>';
+           return '<a href="categories/'.$category->id.'/edit/" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i>Edit</a><a href="categories/'.$category->id.'/destroy/" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
         })
-        ->addColumn('delete', function ($category) {
-            return '<a href="categories/'.$category->id.'/destroy/" 
-                        class="btn btn-danger btn-xs">
-                        <i class="glyphicon glyphicon-trash"></i>Delete</a>';
-        })
-
         ->editColumn('id', 'ID: {{$id}}')
+        ->editColumn('updated_at', function ($category) {
+                return !empty($category->updated_at) ? $category->updated_at->format('d/m/Y H:m') : '';
+        })
+        ->editColumn('created_at', function ($category) {
+                return !empty($category->created_at) ? $category->created_at->format('d/m/Y H:m') : '';
+        })
         ->make(true);
 
-        /*->addColumn('actions','<a href="{{ URL::route( \'categories.edit\', array( \'edit\',$id )) }}">edit</a>
-                    <a href="{{ URL::route( \'categories.destroy\', array( \'destroy\',$id )) }}">delete</a>')*/
-
-        /*return Datatables::of($categorires)
-            ->editColumn('created_at', function($data)
-                { 
-                    return $data->created_at->toDateTimeString()
-                })
-            ->make();*/
-
-        //return Datatables::of($categorires)->make(true);
-
-
-        /*return Datatables::of($categorires)        ->filter(function($query){
-            if (Input::get('id')) {
-                $query->where('id','=',Input::get('id'));
-            }
-        })->make(true);
-*/
-        /*->filter(function($query){
-            if (Input::get('description')) {
-                $query->where('description','=',Input::get('description'));
-            }
-        })->make();*/
-     }
+    }*/
 }

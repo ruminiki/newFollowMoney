@@ -9,8 +9,8 @@
     {!! Form::label('category_superior_id', 'Superior Category:') !!}
 	{!! Form::select('category_superior_id', 
 					 $categories->all('description'), 
-					 empty($category->categorySuperior) ? 0 : $category->categorySuperior->id, 
-					 ['class' => 'form-control']) !!}
+					 empty($category->categorySuperior) ? -1 : $category->categorySuperior->id, 
+					 ['placeholder' => 'PLEASE SELECT...', 'class' => 'form-control']) !!}
 </div>
 
 <!-- Submit Field -->

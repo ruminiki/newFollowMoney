@@ -186,6 +186,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
 
         Yajra\Datatables\DatatablesServiceProvider::class,
+        Yajra\Datatables\ButtonsServiceProvider::class,
 
     ],
 

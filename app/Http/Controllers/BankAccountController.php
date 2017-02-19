@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\BankAccountDataTable;
+use App\Http\Requests;
 use App\Http\Requests\CreateBankAccountRequest;
 use App\Http\Requests\UpdateBankAccountRequest;
 use App\Repositories\BankAccountRepository;
-use App\Http\Controllers\AppBaseController;
-use Illuminate\Http\Request;
 use Flash;
-use Prettus\Repository\Criteria\RequestCriteria;
+use App\Http\Controllers\AppBaseController;
 use Response;
 use Auth;
-use DB;
 
 class BankAccountController extends AppBaseController
 {
-    /** @var  bank_accountRepository */
+    /** @var  BankAccountRepository */
     private $bankAccountRepository;
 
     public function __construct(BankAccountRepository $bankAccountRepo)
@@ -24,43 +23,39 @@ class BankAccountController extends AppBaseController
     }
 
     /**
-     * Display a listing of the bank_account.
+     * Display a listing of the BankAccount.
      *
-     * @param Request $request
+     * @param BankAccountDataTable $bankAccountDataTable
      * @return Response
      */
-    public function index(Request $request)
+    public function index(BankAccountDataTable $bankAccountDataTable)
     {
-        $this->bankAccountRepository->pushCriteria(new RequestCriteria($request));
-        $bankAccounts = $this->bankAccountRepository->paginate(20);
-
-        return view('bank_accounts.index')
-            ->with('bankAccounts', $bankAccounts);
+        return $bankAccountDataTable->render('bankAccounts.index');
     }
 
     /**
-     * Show the form for creating a new bank_account.
+     * Show the form for creating a new BankAccount.
      *
      * @return Response
      */
     public function create()
     {
-        return view('bank_accounts.create');
+        return view('bankAccounts.create');
     }
 
     /**
-     * Store a newly created bank_account in storage.
+     * Store a newly created BankAccount in storage.
      *
-     * @param Createbank_accountRequest $request
+     * @param CreateBankAccountRequest $request
      *
      * @return Response
      */
     public function store(CreateBankAccountRequest $request)
     {
         $input = $request->all();
-        
+
         $input['user_id'] = Auth::id();
-        
+
         $bankAccount = $this->bankAccountRepository->create($input);
 
         Flash::success('Bank Account saved successfully.');
@@ -69,7 +64,7 @@ class BankAccountController extends AppBaseController
     }
 
     /**
-     * Display the specified bank_account.
+     * Display the specified BankAccount.
      *
      * @param  int $id
      *
@@ -85,11 +80,11 @@ class BankAccountController extends AppBaseController
             return redirect(route('bankAccounts.index'));
         }
 
-        return view('bank_accounts.show')->with('bankAccount', $bankAccount);
+        return view('bankAccounts.show')->with('bankAccount', $bankAccount);
     }
 
     /**
-     * Show the form for editing the specified bank_account.
+     * Show the form for editing the specified BankAccount.
      *
      * @param  int $id
      *
@@ -105,11 +100,11 @@ class BankAccountController extends AppBaseController
             return redirect(route('bankAccounts.index'));
         }
 
-        return view('bank_accounts.edit')->with('bankAccount', $bankAccount);
+        return view('bankAccounts.edit')->with('bankAccount', $bankAccount);
     }
 
     /**
-     * Update the specified bank_account in storage.
+     * Update the specified BankAccount in storage.
      *
      * @param  int              $id
      * @param UpdateBankAccountRequest $request
@@ -134,7 +129,7 @@ class BankAccountController extends AppBaseController
     }
 
     /**
-     * Remove the specified bank_account from storage.
+     * Remove the specified BankAccount from storage.
      *
      * @param  int $id
      *
@@ -156,18 +151,4 @@ class BankAccountController extends AppBaseController
 
         return redirect(route('bankAccounts.index'));
     }
-
-    public function search(Request $request)
-    {
-        // Gets the query string from our form submission 
-        $query = $request['search'];
-        // Returns an array of articles that have the query string located somewhere within 
-        // our articles titles. Paginates them so we can break up lots of search results.
-        $bank_accounts = DB::table('bank_accounts')->where('description', 'LIKE', '%' . $query . '%')->paginate(20);
-            
-        // returns a view and passes the view the list of articles and the original query.
-        return view('bank_accounts.index', compact('bank_accounts', 'query'));
-
-        //return redirect(route('categories.index'));
-     }
 }

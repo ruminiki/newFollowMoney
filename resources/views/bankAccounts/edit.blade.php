@@ -13,7 +13,7 @@
                <div class="row">
                    {!! Form::model($bankAccount, ['route' => ['bankAccounts.update', $bankAccount->id], 'method' => 'patch']) !!}
 
-                        @include('bank_accounts.fields')
+                        @include('bankAccounts.fields')
 
                    {!! Form::close() !!}
                </div>

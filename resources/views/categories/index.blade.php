@@ -1,42 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-    <table class="table table-bordered" id="categories-table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Category Superior</th>
-                <th>Created At</th>
-                <th>Updated At</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-    </table>
+    <section class="content-header">
+        <h1 class="pull-left">Categories</h1>
+        <h1 class="pull-right">
+           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('categories.create') !!}">Add New</a>
+        </h1>
+    </section>
+    <div class="content">
+        <div class="clearfix"></div>
+
+        @include('flash::message')
+
+        <div class="clearfix"></div>
+        <div class="box box-primary">
+            <div class="box-body">
+                    @include('categories.table')
+            </div>
+        </div>
+    </div>
 @endsection
-
-@push('scripts')
-    <script>
-        $(function() {
-            $('#categories-table').DataTable({
-                processing: false,
-                serverSide: true,
-                ajax: '{!! route('categories.search') !!}',
-                "columnDefs": [{
-                    "defaultContent": "-",
-                    "targets": "_all"
-                }],
-                columns: [
-                    { data: 'id', name: 'id', searchable: false, orderable: true },
-                    { data: 'description', name: 'description', searchable: true, orderable: true },
-                    { data: 'category_superior', name: 'superior', searchable: false, orderable: false },
-                    { data: 'created_at', name: 'created_at', searchable: false, orderable: false },
-                    { data: 'updated_at', name: 'updated_at', searchable: false, orderable: false },
-                    { data: 'actions', name: 'actions', orderable: false, searchable: false}
-                ]
-            });
-        });
-    </script>
-
-@endpush
-

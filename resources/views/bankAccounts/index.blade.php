@@ -15,9 +15,8 @@
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
-                    @include('bank_accounts.table')
+                    @include('bankAccounts.table')
             </div>
         </div>
     </div>
 @endsection
-

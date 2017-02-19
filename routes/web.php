@@ -19,8 +19,6 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 
-Route::resource('bankAccounts', 'BankAccountController');
-
 /*Route::post('categories/search', [
   'as' => 'categories.search', 
   'uses' => 'CategoryController@search'
@@ -28,8 +26,10 @@ Route::resource('bankAccounts', 'BankAccountController');
 /*Route::post('categories', 'CategoryController', [
     'search'  => 'datatables.search',
 ]);*/
-Route::get('categories/search', [
+/*Route::get('categories/search', [
   'as' => 'categories.search', 
   'uses' => 'CategoryController@search'
-]);
+]);*/
 Route::resource('categories', 'CategoryController');
+
+Route::resource('bankAccounts', 'BankAccountController');
