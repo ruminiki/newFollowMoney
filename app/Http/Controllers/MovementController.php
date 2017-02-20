@@ -15,6 +15,9 @@ use App\Models\Category;
 use App\Models\PaymentForm;
 use App\Models\CreditCard;
 use App\Models\BankAccount;
+use App\Models\Movement;
+use Log;
+use Redirect;
 
 class MovementController extends AppBaseController
 {
@@ -66,12 +69,28 @@ class MovementController extends AppBaseController
      */
     public function store(CreateMovementRequest $request)
     {
-        $input = $request->all();
-        $input['user_id'] = Auth::id();
-        $input['emission_date'] .= ' 00:00:00';
-        $input['maturity_date'] .= ' 00:00:00';
-        $input['value'] = $this->formatValue($input['value']);
-        $movement = $this->movementRepository->create($input);
+        $movement = new Movement($request->all());
+
+        $movement->user_id = Auth::id(); 
+        $movement->value = $this->formatValue($movement->value);
+
+        ///===========CRIAR TRANSAÇÃO============
+
+        //se o movimento for de cartão de crédito gerenciar a fatura
+        if ( $movement->paymentForm <> null && $movement->paymentForm->generate_invoice ){
+            if ( empty($movement->creditCard )){
+                return Redirect::back()->withErrors(['For payment form ' . $movement->paymentForm->description . ', credit card is required.'])->withInput();
+            }else{
+                Log::info("====Add movement to invoice======");
+                try {
+                    $movement->creditCard->addToInvoice($movement);    
+                }catch(Exception $e) {
+                    return Redirect::back()->withErrors([$e->getMessage()])->withInput();   
+                }
+            }
+        }
+
+        $movement = $this->movementRepository->create($movement->toArray());
 
         Flash::success('Movement saved successfully.');
 

@@ -15,19 +15,20 @@ class CreateCreditCardInvoicesTable extends Migration
     {
         Schema::create('credit_card_invoices', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('emission_date');
             $table->date('maturity_date');
-            $table->decimal('value', 9, 2);
-            $table->decimal('amount_paid', 9, 2);
-            $table->string('reference_month', 20);
+            $table->decimal('value', 9, 2)->nullable();
+            $table->decimal('amount_paid', 9, 2)->nullable();
+            $table->integer('reference_month');
             $table->integer('reference_year');
             $table->string('status', 20);
-            $table->integer('credit_card_id')->unsigned()->nullable();
+            $table->integer('credit_card_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('credit_card_id')->references('id')->on('credit_cards');
             $table->foreign('user_id')->references('id')->on('users');
+
+            $table->unique(['credit_card_id', 'reference_year', 'reference_month', 'user_id'], 'credit_card_invoice_user_index_unique');
         });
     }
 

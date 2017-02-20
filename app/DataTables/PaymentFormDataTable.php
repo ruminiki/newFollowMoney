@@ -17,6 +17,9 @@ class PaymentFormDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'paymentForms.datatables_actions')
+            ->editColumn('generate_invoice', function ($category) {
+                return $category->generate_invoice ? 'YES' : 'NO';
+            })
             ->editColumn('updated_at', function ($category) {
                 return !empty($category->updated_at) ? $category->updated_at->format('d/m/Y H:m') : '';
             })
@@ -79,6 +82,7 @@ class PaymentFormDataTable extends DataTable
     {
         return [
             'description' => ['name' => 'description', 'data' => 'description'],
+            'generate_invoice' => ['name' => 'generate_invoice', 'data' => 'generate_invoice'],
             'created_at' => ['name' => 'created_at', 'data' => 'created_at'],
             'updated_at' => ['name' => 'updated_at', 'data' => 'updated_at']
         ];

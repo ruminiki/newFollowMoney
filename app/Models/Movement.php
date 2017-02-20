@@ -29,6 +29,7 @@ class Movement extends Model
         'category_id',
         'bank_account_id',
         'credit_card_id',
+        'credit_card_invoice_id',
         'user_id'
     ];
 
@@ -52,6 +53,7 @@ class Movement extends Model
         'bank_account_id' => 'integer',
         'credit_card_id' => 'integer',
         'movement_origin_id' => 'integer',
+        'credit_card_invoice_id' => 'integer',
         'user_id' => 'integer'
     ];
 
@@ -108,6 +110,15 @@ class Movement extends Model
     public function creditCard()
     {
         return $this->belongsTo(\App\Models\CreditCard::class, 'credit_card_id', 'id');
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function creditCardInvoice()
+    {
+        return $this->belongsTo(\App\Models\CreditCardInvoice::class, 'credit_card_invoice_id', 'id');
     }
 
     /**

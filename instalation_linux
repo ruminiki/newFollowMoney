@@ -1,0 +1,24 @@
+Install linux:
+
+ 
+ sudo apt remove --purge php7.0 
+ sudo apt install php7.0
+ sudo apt install php7.0-mysql
+ sudo apt get install mysql-server
+
+ --install composer
+ php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"\nphp -r "if (hash_file('SHA384', 'composer-setup.php') === '55d6ead61b29c7bdee5cccfb50076874187bd9f21f65d8991d46ec5cc90518f447387fb9f76ebae1fbbacf329e583e30') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"\nphp composer-setup.php\nphp -r "unlink('composer-setup.php');"
+
+ sudo apt-get install php-mbstring
+ sudo apt-get install ext-xml
+ sudo apt-get install php-xml
+
+ php composer.phar install
+
+ 1796  php artisan serve
+ 1797  php7.0 artisan serve
+ 1798  php7.0 artisan migrate
+
+**KEY 
+php artisan key:generate
+php artisan config:clear

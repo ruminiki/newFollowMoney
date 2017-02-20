@@ -19,12 +19,12 @@ class CreditCardInvoice extends Model
 
     protected $dates = ['deleted_at'];
 
+    public static $OPEN = 'OPEN';
+    public static $CLOSED = 'CLOSED';
+
 
     public $fillable = [
-        'emission_date',
         'maturity_date',
-        'value',
-        'amount_paid',
         'reference_month',
         'reference_year',
         'status',
@@ -38,9 +38,8 @@ class CreditCardInvoice extends Model
      * @var array
      */
     protected $casts = [
-        'emission_date' => 'date',
         'maturity_date' => 'date',
-        'reference_month' => 'string',
+        'reference_month' => 'integer',
         'reference_year' => 'integer',
         'status' => 'string',
         'credit_card_id' => 'integer',
@@ -53,13 +52,16 @@ class CreditCardInvoice extends Model
      * @var array
      */
     public static $rules = [
-        'emission_date' => 'required',
         'maturity_date' => 'required',
-        'value' => 'required',
         'reference_month' => 'required',
         'reference_year' => 'required',
+        'credit_card_id' => 'required',
         'status' => 'required'
     ];
+
+    public function isOpen(){
+        return $this->status = CreditCardInvoice::$OPEN;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -67,6 +69,14 @@ class CreditCardInvoice extends Model
     public function creditCard()
     {
         return $this->belongsTo(\App\Models\CreditCard::class, 'credit_card_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     **/
+    public function movements()
+    {
+        return $this->hasMany(\App\Models\Movement::class, 'credit_card_invoice_id', 'id');
     }
 
     /**

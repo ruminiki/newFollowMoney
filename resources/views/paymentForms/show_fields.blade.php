@@ -10,3 +10,7 @@
     <p>{!! $paymentForm->description !!}</p>
 </div>
 
+<div class="form-group">
+    {!! Form::label('generate_invoice', 'Generate Invoice:') !!}
+    <p>{!! $paymentForm->generate_invoice !!}</p>
+</div>

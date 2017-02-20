@@ -22,6 +22,7 @@ class PaymentForm extends Model
 
     public $fillable = [
         'description',
+        'generate_invoice',
         'user_id'
     ];
 
@@ -32,6 +33,7 @@ class PaymentForm extends Model
      */
     protected $casts = [
         'description' => 'string',
+        'generate_invoice' => 'boolean',
         'user_id' => 'integer'
     ];
 
@@ -41,7 +43,8 @@ class PaymentForm extends Model
      * @var array
      */
     public static $rules = [
-        'description' => 'required'
+        'description' => 'required',
+        'generate_invoice' => 'required'
     ];
 
     /**

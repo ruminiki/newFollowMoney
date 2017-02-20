@@ -157,16 +157,15 @@ class BankAccountController extends AppBaseController
     }
 
     public function accountStatement($id){
-        $bankAccount = $this->bankAccountRepository->findWithoutFail($id);
+        $bank_account = $this->bankAccountRepository->findWithoutFail($id);
 
-        if (empty($bankAccount)) {
+        if (empty($bank_account)) {
             Flash::error('Bank Account not found');
-
             return redirect(route('bankAccounts.index'));
         }
 
         $movements = Movement::whereRaw('bank_account_id = ? and user_id = ?', [$id, Auth::id()])->get();
 
-        return view('bankAccounts.account_statement')->with('movements', $movements)->with('bankAccount', $bankAccount);
+        return view('bankAccounts.account_statement')->with('movements', $movements)->with('bank_account', $bank_account);
     }
 }
