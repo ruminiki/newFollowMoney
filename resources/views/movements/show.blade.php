@@ -11,7 +11,7 @@
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('movements.show_fields')
-                    <a href="{!! route('movements.index') !!}" class="btn btn-default">Back</a>
+                    {{ link_to(URL::previous(), 'Back', ['class' => 'btn btn-default']) }}
                 </div>
             </div>
         </div>

@@ -6,6 +6,8 @@ use App\Models\Movement;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 use DB;
+use Config;
+use Log;
 
 class MovementDataTable extends DataTable
 {
@@ -42,11 +44,10 @@ class MovementDataTable extends DataTable
         ->leftJoin( DB::raw('bank_accounts as bankAccount'), DB::raw( 'bankAccount.id' ), '=', DB::raw( 'movements.bank_account_id' ))
         ->leftJoin( DB::raw('credit_cards as creditCard'), DB::raw( 'creditCard.id' ), '=', DB::raw( 'movements.credit_card_id' ))
         ->leftJoin( DB::raw('payment_forms as paymentForm'), DB::raw( 'paymentForm.id' ), '=', DB::raw( 'movements.payment_form_id' ))
+        ->whereRaw('MONTH(movements.maturity_date) = ? and YEAR(movements.maturity_date) = ?', [Config::get('date_reference.month'), Config::get('date_reference.year')])
         ->select(DB::raw('movements.*, category.description as category, bankAccount.description as bank_account, creditCard.description as credit_card, paymentForm.description as payment_form'))
         ->orderBy('movements.maturity_date', 'desc')
         ->get();
-
-        //filtrar movimentos do mes
 
         return $this->applyScopes($movements);
     }
@@ -85,6 +86,12 @@ class MovementDataTable extends DataTable
                     'colvis'
                 ]
             ]);
+            /*'previous',
+                    'month',
+                    [
+                        'text' => Config::get('date_reference.month') . '/' . Config::get('date_reference.year'),
+                    ],
+                    'next',*/
     }
 
     /**

@@ -10,18 +10,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @package App\Models
  * @version February 19, 2017, 10:44 am UTC
  */
+
 class CreditCardInvoice extends Model
 {
     use SoftDeletes;
 
+    public const OPEN = 'OPEN';
+    public const CLOSED = 'CLOSED';
+
     public $table = 'credit_card_invoices';
     
-
     protected $dates = ['deleted_at'];
-
-    public static $OPEN = 'OPEN';
-    public static $CLOSED = 'CLOSED';
-
 
     public $fillable = [
         'maturity_date',
@@ -60,7 +59,7 @@ class CreditCardInvoice extends Model
     ];
 
     public function isOpen(){
-        return $this->status = CreditCardInvoice::$OPEN;
+        return $this->status == CreditCardInvoice::OPEN;
     }
 
     /**

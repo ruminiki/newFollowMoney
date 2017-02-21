@@ -165,7 +165,20 @@ class BankAccountController extends AppBaseController
         }
 
         $movements = Movement::whereRaw('bank_account_id = ? and user_id = ?', [$id, Auth::id()])->get();
+        $debits = 0;
+        $credits = 0;
+        foreach ($movements as $movement) {
+            if ( $movement->isCredit() ){
+                $credits += $movement->value;
+            }else{
+                $debits += $movement->value;
+            }
+        }
 
-        return view('bankAccounts.account_statement')->with('movements', $movements)->with('bank_account', $bank_account);
+        return view('bankAccounts.account_statement')
+               ->with('movements', $movements)
+               ->with('bank_account', $bank_account)
+               ->with('credits', $credits)
+               ->with('debits', $debits);
     }
 }

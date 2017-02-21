@@ -194,7 +194,7 @@ class MovementController extends AppBaseController
 
         Flash::success('Movement deleted successfully.');
 
-        return redirect(route('movements.index'));
+        return Redirect::back();
     }
 
     private function formatValue($value){

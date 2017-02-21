@@ -98,7 +98,7 @@ class CreditCard extends Model
             $credit_card_invoice->reference_month = $invoice_date->month;
             $credit_card_invoice->reference_year = $invoice_date->year;
             $credit_card_invoice->user_id = $movement->user_id;
-            $credit_card_invoice->status = CreditCardInvoice::$OPEN;
+            $credit_card_invoice->status = CreditCardInvoice::OPEN;
 
             Log::info('======== Creating invoice to ' . $movement->creditCard->description . ' ' . $credit_card_invoice->reference_month . '-' . $credit_card_invoice->reference_year);
 

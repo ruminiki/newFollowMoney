@@ -10,9 +10,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @package App\Models
  * @version February 19, 2017, 11:31 am UTC
  */
+
 class Movement extends Model
 {
     use SoftDeletes;
+
+    public const CREDIT = 'CREDIT';
+    public const DEBIT = 'DEBIT';
 
     public $table = 'movements';
     
@@ -71,6 +75,10 @@ class Movement extends Model
         'operation' => 'required',
         'status' => 'required'
     ];
+
+    public function isCredit(){
+        return $this->operation == Movement::CREDIT;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

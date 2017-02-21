@@ -109,5 +109,5 @@
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
     {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-    <a href="{!! route('movements.index') !!}" class="btn btn-default">Cancel</a>
+    {{ link_to(URL::previous(), 'Cancel', ['class' => 'btn btn-default']) }}
 </div>
