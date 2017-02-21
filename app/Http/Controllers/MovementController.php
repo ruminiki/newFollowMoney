@@ -18,15 +18,20 @@ use App\Models\BankAccount;
 use App\Models\Movement;
 use Log;
 use Redirect;
+use Session;
+use Exception;
 
 class MovementController extends AppBaseController
 {
+    
     /** @var  MovementRepository */
     private $movementRepository;
 
     public function __construct(MovementRepository $movementRepo)
     {
         $this->movementRepository = $movementRepo;
+        Session::put('month_reference', date('m'));
+        Session::put('year_reference', date('Y'));
     }
 
     /**
@@ -195,6 +200,36 @@ class MovementController extends AppBaseController
         Flash::success('Movement deleted successfully.');
 
         return Redirect::back();
+    }
+
+    public function next_month(){
+        $m = Session::get('month_reference');
+        $y = Session::get('year_reference');
+        if ( $m == 12 ){
+            $m = 01;
+            $y += 1;
+        }else{
+            $m += 1;
+        }
+        Session::put('month_reference', $m);
+        Session::put('year_reference', $y);
+
+        return redirect(route('movements.index'));
+    }
+
+    public function previous_month(){
+        $m = Session::get('month_reference');
+        $y = Session::get('year_reference');
+        if ( $m == 01 ){
+            $m = 12;
+            $y -= 1;
+        }else{
+            $m -= 1;
+        }
+        Session::put('month_reference', $m);
+        Session::put('year_reference', $y);
+        
+        return redirect(route('movements.index'));
     }
 
     private function formatValue($value){

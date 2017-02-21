@@ -17,7 +17,18 @@
             <div class="box-body">
                     @include('movements.table')
             </div>
+
+            <section class="content-footer">
+                <div class="dt-buttons btn-group" style="margin-left:10px; margin-bottom:10px">
+                    {{ link_to_route('movements.previous_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-left']) }}
+                    <div class="btn btn-default">
+                        {{ Session::get('month_reference') . ' / ' . Session::get('year_reference') }}
+                    </div>
+                    {{ link_to_route('movements.next_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-right']) }}
+                </div>
+            </section>
         </div>
     </div>
+
 @endsection
 

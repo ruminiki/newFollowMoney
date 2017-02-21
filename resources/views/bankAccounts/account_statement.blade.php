@@ -15,7 +15,7 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">{!! $bank_account->description . ' - ' . $bank_account->number !!}</h1>
+        <h3 class="pull-left">{!! $bank_account->description . ' - ' . $bank_account->number . ' - ' . date('F', mktime(0, 0, 0, Session::get('month_reference'), 10)) . '/' . Session::get('year_reference') !!}</h3>
     </section>
     <div class="content">
         <div class="clearfix"></div>
@@ -27,7 +27,7 @@
             <div class="box-body">
                 <table class="table table-bordered" id="account-statements-table">
                     <tr>
-                        <td colspan="6">{{ 'Balance: R$ '. number_format($credits, 2, ',', '.')  }}</td>
+                        <td colspan="6">{{ 'Previous Balance: R$ '. number_format($previous_balance, 2, ',', '.')  }}</td>
                     </tr>
                     <tr>
                         <th>Emission</th>
@@ -43,7 +43,7 @@
                             <td>{{ date_format($movement->maturity_date,"d-m-Y") }}</td>
                             <td>{{ $movement->operation }}</td>
                             <td>{{ $movement->status }}</td>
-                            <td>{{ $movement->value }}</td>
+                            <td>{{ 'R$ '. number_format($movement->value, 2, ',', '.') }}</td>
                             <td>
                                 <div class="btn-group" style="width:130px;">
                                     {!! Form::open(['action' => ['MovementController@destroy', $movement->id], 'method' => 'delete', 'onsubmit' => 'return confirmDelete()']) !!}
@@ -58,13 +58,21 @@
                         </tr>
                     @endforeach
                     <tr>
-                        <td colspan="6">{{ 'Credits: R$ '. number_format($credits, 2, ',', '.') . ' ' . 'Debits: R$ ' . number_format($debits, 2, ',', '.') . ' ' . 'Balance: R$ ' . number_format(($credits - $debits), 2, ',', '.')  }}</td>
+                        <td colspan="6">{{ 'Credits: R$ '. number_format($credits, 2, ',', '.') . ' ' . 'Debits: R$ ' . number_format($debits, 2, ',', '.') . ' ' . 'Balance: R$ ' . number_format(($previous_balance + $credits - $debits), 2, ',', '.')  }}</td>
                     </tr>
                 </table>
+                
+                <br>
+
                 <section class="content-footer">
-                    <h1 class="pull-left">
-                       <a class="btn btn-default pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('bankAccounts.index') !!}">Voltar</a>
-                    </h1>
+                    <div class="dt-buttons btn-group" style="margin-left:0px; margin-bottom:10px">
+                        {{ link_to_route('bankAccounts.previous_month', '', $bank_account->id, ['class' => 'btn btn-default fa fa-chevron-left']) }}
+                        <div class="btn btn-default">
+                            {{ Session::get('month_reference') . ' / ' . Session::get('year_reference') }}
+                        </div>
+                        {{ link_to_route('bankAccounts.next_month', '', $bank_account->id, ['class' => 'btn btn-default fa fa-chevron-right']) }}
+                        <a class="btn btn-default" href="{!! route('bankAccounts.index') !!}">Voltar</a>
+                    </div>
                 </section>
             </div>
         </div>

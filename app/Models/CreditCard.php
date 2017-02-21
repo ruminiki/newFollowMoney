@@ -9,6 +9,7 @@ use App\User;
 use DB;
 use Log;
 use Carbon\Carbon;
+use Exception;
 
 /**
  * Class CreditCard

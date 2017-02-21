@@ -12,7 +12,7 @@
         'onclick' => "return confirm('Are you sure?')"
     ]) !!}
 
-    <a href="{{ route('bankAccounts.accountStatement', $id) }}" class='btn btn-default btn-xs'>
+    <a href="{{ route('bankAccounts.account_statement', $id) }}" class='btn btn-default btn-xs'>
         <i class="glyphicon glyphicon-list-alt"></i>
     </a>
 </div>

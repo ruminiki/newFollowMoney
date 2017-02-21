@@ -8,6 +8,7 @@ use Yajra\Datatables\Services\DataTable;
 use DB;
 use Config;
 use Log;
+use Session;
 
 class MovementDataTable extends DataTable
 {
@@ -44,7 +45,7 @@ class MovementDataTable extends DataTable
         ->leftJoin( DB::raw('bank_accounts as bankAccount'), DB::raw( 'bankAccount.id' ), '=', DB::raw( 'movements.bank_account_id' ))
         ->leftJoin( DB::raw('credit_cards as creditCard'), DB::raw( 'creditCard.id' ), '=', DB::raw( 'movements.credit_card_id' ))
         ->leftJoin( DB::raw('payment_forms as paymentForm'), DB::raw( 'paymentForm.id' ), '=', DB::raw( 'movements.payment_form_id' ))
-        ->whereRaw('MONTH(movements.maturity_date) = ? and YEAR(movements.maturity_date) = ?', [Config::get('date_reference.month'), Config::get('date_reference.year')])
+        ->whereRaw('MONTH(movements.maturity_date) = ? and YEAR(movements.maturity_date) = ?', [Session::get('month_reference'), Session::get('year_reference')])
         ->select(DB::raw('movements.*, category.description as category, bankAccount.description as bank_account, creditCard.description as credit_card, paymentForm.description as payment_form'))
         ->orderBy('movements.maturity_date', 'desc')
         ->get();
@@ -102,13 +103,13 @@ class MovementDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'Description' => ['name' => 'description', 'data' => 'description', 'width' => '30'],
-            'Emission' => ['name' => 'emission_date', 'data' => 'emission_date', 'width' => '8%'],
-            'Maturity' => ['name' => 'maturity_date', 'data' => 'maturity_date', 'width' => '8%'],
-            'Operation' => ['name' => 'operation', 'data' => 'operation', 'width' => '8%'],
-            'Value' => ['name' => 'value', 'data' => 'value', 'width' => '8%'],
-            'Category' => ['name' => 'category', 'data' => 'category', 'width' => '18%'],
-            'Bank Account' => ['name' => 'bank_account', 'data' => 'bank_account', 'width' => '18']
+            'Description' => ['name' => 'description', 'data' => 'description', 'width' => '30', 'orderable' => true, 'searchable' => true],
+            'Emission' => ['name' => 'emission_date', 'data' => 'emission_date', 'width' => '8%', 'orderable' => false, 'searchable' => false],
+            'Maturity' => ['name' => 'maturity_date', 'data' => 'maturity_date', 'width' => '8%', 'orderable' => false, 'searchable' => false],
+            'Operation' => ['name' => 'operation', 'data' => 'operation', 'width' => '8%', 'orderable' => true, 'searchable' => true],
+            'Value' => ['name' => 'value', 'data' => 'value', 'width' => '8%', 'orderable' => false, 'searchable' => false],
+            'Category' => ['name' => 'category', 'data' => 'category', 'width' => '18%', 'orderable' => true, 'searchable' => true],
+            'Bank Account' => ['name' => 'bank_account', 'data' => 'bank_account', 'width' => '18', 'orderable' => true, 'searchable' => true]
         ];
     }
 

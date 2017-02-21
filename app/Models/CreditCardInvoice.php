@@ -15,8 +15,8 @@ class CreditCardInvoice extends Model
 {
     use SoftDeletes;
 
-    public const OPEN = 'OPEN';
-    public const CLOSED = 'CLOSED';
+    const OPEN = 'OPEN';
+    const CLOSED = 'CLOSED';
 
     public $table = 'credit_card_invoices';
     

@@ -15,8 +15,8 @@ class Movement extends Model
 {
     use SoftDeletes;
 
-    public const CREDIT = 'CREDIT';
-    public const DEBIT = 'DEBIT';
+    const CREDIT = 'CREDIT';
+    const DEBIT = 'DEBIT';
 
     public $table = 'movements';
     

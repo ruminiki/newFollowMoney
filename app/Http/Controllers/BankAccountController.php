@@ -15,6 +15,9 @@ use DB;
 use App\Models\AccountStatement;
 use App\Models\Movement;
 use Yajra\Datatables\Datatables;
+use Session;
+use Carbon\Carbon;
+use Log;
 
 class BankAccountController extends AppBaseController
 {
@@ -156,7 +159,7 @@ class BankAccountController extends AppBaseController
         return redirect(route('bankAccounts.index'));
     }
 
-    public function accountStatement($id){
+    public function account_statement($id){
         $bank_account = $this->bankAccountRepository->findWithoutFail($id);
 
         if (empty($bank_account)) {
@@ -164,7 +167,12 @@ class BankAccountController extends AppBaseController
             return redirect(route('bankAccounts.index'));
         }
 
-        $movements = Movement::whereRaw('bank_account_id = ? and user_id = ?', [$id, Auth::id()])->get();
+        //====LOAD MOVEMENTS
+        $movements = Movement::whereRaw('bank_account_id = ? and ' . 
+                            'user_id = ? and MONTH(movements.maturity_date) = ? and ' .
+                            'YEAR(movements.maturity_date) = ?', 
+                            [$id, Auth::id(), Session::get('month_reference'), Session::get('year_reference')])->get();
+
         $debits = 0;
         $credits = 0;
         foreach ($movements as $movement) {
@@ -175,10 +183,59 @@ class BankAccountController extends AppBaseController
             }
         }
 
+        //====PREVIOUS BALANCE
+        $previous_credit = Movement::whereRaw('bank_account_id = ? and user_id = ? and movements.maturity_date < ? and operation = ?', 
+                                             [$id, 
+                                             Auth::id(), 
+                                             Carbon::createFromDate(Session::get('year_reference'), Session::get('month_reference'), 01), 
+                                             Movement::CREDIT])->sum('value');
+
+        $previous_debit = Movement::whereRaw('bank_account_id = ? and user_id = ? and movements.maturity_date < ? and operation = ?', 
+                                            [$id, 
+                                            Auth::id(), 
+                                            Carbon::createFromDate(Session::get('year_reference'), Session::get('month_reference'), 01), 
+                                            Movement::DEBIT])->sum('value');
+
+        $previous_balance = $previous_credit - $previous_debit;
+
+        Log::info('Previous Credit: ' . $previous_credit . '  -  ' . 'Previous Debit: ' . $previous_debit);
+        Log::info('Previous Balance: ' . $previous_balance);
+
         return view('bankAccounts.account_statement')
                ->with('movements', $movements)
                ->with('bank_account', $bank_account)
                ->with('credits', $credits)
-               ->with('debits', $debits);
+               ->with('debits', $debits)
+               ->with('previous_balance', $previous_balance);
+    }
+
+    public function next_month($bank_account_id){
+        $m = Session::get('month_reference');
+        $y = Session::get('year_reference');
+        if ( $m == 12 ){
+            $m = 01;
+            $y += 1;
+        }else{
+            $m += 1;
+        }
+        Session::put('month_reference', $m);
+        Session::put('year_reference', $y);
+
+        return redirect(route('bankAccounts.account_statement', $bank_account_id));
+    }
+
+    public function previous_month($bank_account_id){
+        $m = Session::get('month_reference');
+        $y = Session::get('year_reference');
+        if ( $m == 01 ){
+            $m = 12;
+            $y -= 1;
+        }else{
+            $m -= 1;
+        }
+        Session::put('month_reference', $m);
+        Session::put('year_reference', $y);
+        
+        return redirect(route('bankAccounts.account_statement', $bank_account_id));
     }
 }
