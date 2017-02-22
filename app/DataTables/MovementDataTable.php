@@ -9,6 +9,8 @@ use DB;
 use Config;
 use Log;
 use Session;
+use Carbon\Carbon;
+use Auth;
 
 class MovementDataTable extends DataTable
 {
@@ -18,6 +20,19 @@ class MovementDataTable extends DataTable
      */
     public function ajax()
     {
+        //====PREVIOUS BALANCE
+        $previous_credit = Movement::whereRaw('user_id = ? and movements.maturity_date < ? and operation = ?', 
+                                             [Auth::id(), 
+                                             Carbon::createFromDate(Session::get('year_reference'), Session::get('month_reference'), 01), 
+                                             Movement::CREDIT])->sum('value');
+
+        $previous_debit = Movement::whereRaw('user_id = ? and movements.maturity_date < ? and operation = ?', 
+                                            [Auth::id(), 
+                                            Carbon::createFromDate(Session::get('year_reference'), Session::get('month_reference'), 01), 
+                                            Movement::DEBIT])->sum('value');
+
+        $previous_balance = $previous_credit - $previous_debit;
+
         return $this->datatables->of($this->query())
             ->addColumn('action', 'movements.datatables_actions')
             ->editColumn('emission_date', function ($category) {
@@ -29,6 +44,9 @@ class MovementDataTable extends DataTable
             ->editColumn('created_at', function ($category) {
                     return !empty($category->created_at) ? $category->created_at->format('d/m/Y H:m') : '';
             })
+            ->with([
+                'previous_balance' => $previous_balance,
+            ])
             ->make(true);
     }
 
@@ -87,12 +105,6 @@ class MovementDataTable extends DataTable
                     'colvis'
                 ]
             ]);
-            /*'previous',
-                    'month',
-                    [
-                        'text' => Config::get('date_reference.month') . '/' . Config::get('date_reference.year'),
-                    ],
-                    'next',*/
     }
 
     /**

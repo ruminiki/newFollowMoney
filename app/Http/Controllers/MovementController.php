@@ -20,6 +20,7 @@ use Log;
 use Redirect;
 use Session;
 use Exception;
+use Carbon\Carbon;
 
 class MovementController extends AppBaseController
 {
@@ -162,19 +163,50 @@ class MovementController extends AppBaseController
      */
     public function update($id, UpdateMovementRequest $request)
     {
-        $movement = $this->movementRepository->findWithoutFail($id);
+        $movement_old = $this->movementRepository->findWithoutFail($id);
 
-        if (empty($movement)) {
+        if (empty($movement_old)) {
             Flash::error('Movement not found');
-
             return redirect(route('movements.index'));
         }
 
-        $request['value'] = $this->formatValue($request['value']);
-        $movement = $this->movementRepository->update($request->all(), $id);
+        //=====RECUPERA O VALOR E A DATA DE VENCIMENTO ANTERIOR
+        $previous_value = $movement_old->value;
+        $previous_maturity_date = $movement_old->maturity_date;
+        $previous_credit_card = $movement_old->credit_card;
 
+        //=====GERA NOVO OBJETO A PARTIR DA REQUISIÇÃO
+        $movement = new Movement($request->all());
+        $movement->user_id = Auth::id(); 
+        $movement->value = $this->formatValue($movement->value);
+
+        //====VERIFY IF HAS CREDIT CARD INVOICE AND IF THIS IS CLOSED
+        //====ON THIS CASE VERIFY IF THE VALUE, CREDIT CARD AND DATE MATURITY IS CHANCHED
+        try{
+            if ( $movement_old->credit_card_invoice != null && $movement_old->credit_card_invoice_id > 0 ){
+                if ( $movement_old->credit_card_invoice->isClosed() ){
+                    if ( $movement_old->creditCard != null && $movement_old->credit_card_id > 0 ){
+                        //SE O CARTÃO DE CRÉDITO FOI ALTERADO
+                        if ( $movement_old->credit_card_id != $movement->credit_card_id ){
+                            throw new Exception("Error update movement. Invoice is closed");
+                        }
+                        //SE O VALOR FOI ALTERADO
+                        if ( $movement_old->value != $movement->value ){
+                            throw new Exception("Error update movement. Invoice is closed");      
+                        }
+                        //SE A DATA DE VENCIMENTO FOI ALTERADA
+                        if ( date_format($movement_old->maturity_date, 'Ymd') != date_format($movement->maturity_date, 'Ymd') ) {
+                            throw new Exception("Error update movement. Invoice is closed");        
+                        }
+                    }
+                }
+            }
+        }catch(Exception $e) {
+            return Redirect::back()->withErrors('This movement is on an enclosed invoice. So it can not be changed. Please reopen invoice to delete it')->withInput();    
+        }
+        
+        $movement = $this->movementRepository->update($movement->toArray(), $id);
         Flash::success('Movement updated successfully.');
-
         return redirect(route('movements.index'));
     }
 
@@ -191,14 +223,18 @@ class MovementController extends AppBaseController
 
         if (empty($movement)) {
             Flash::error('Movement not found');
-
             return redirect(route('movements.index'));
         }
 
+        //DO NOT DESTROY IF MOVEMENT IN A INVOICE CLOSED
+        if ( $movement->credit_card_invoice != null && $movement->credit_card_invoice_id > 0 ){
+            if ( $movement->credit_card_invoice->isClosed() ){
+                return Redirect::back()->withErrors('This movement is on an enclosed invoice. So it can not be deleted. Please reopen invoice to delete it.')->withInput();
+            }
+        }  
+
         $this->movementRepository->delete($id);
-
         Flash::success('Movement deleted successfully.');
-
         return Redirect::back();
     }
 

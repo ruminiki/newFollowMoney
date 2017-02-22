@@ -10,6 +10,14 @@
     <div class="content">
         <div class="clearfix"></div>
 
+        <div class="box-body">
+            <table class="table table-bordered" id="account-statements-table">
+                <tr>
+                    <td colspan="6">{{ 'Previous Balance: R$ '. number_format(0, 2, ',', '.')  }}</td>
+                </tr>
+            </table>
+        </div>
+
         @include('flash::message')
 
         <div class="clearfix"></div>
