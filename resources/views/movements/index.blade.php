@@ -10,33 +10,67 @@
     <div class="content">
         <div class="clearfix"></div>
 
-        <div class="box-body">
-            <table class="table table-bordered" id="account-statements-table">
-                <tr>
-                    <td colspan="6">{{ 'Previous Balance: R$ '. number_format(0, 2, ',', '.')  }}</td>
-                </tr>
-            </table>
-        </div>
-
         @include('flash::message')
 
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
-                    @include('movements.table')
-            </div>
+                <table class="table table-bordered" id="account-statements-table">
+                    <tr>
+                        <td colspan="6">
+                            {{ 'Previous Balance: R$ '. number_format($previous_balance, 2, ',', '.') . '   ' .
+                               'Month Balance: R$ ' . number_format($month_balance, 2, ',', '.') . '   ' .
+                               'Estimated Balance: R$ ' . number_format($previous_balance + $month_balance, 2, ',', '.') }}
+                        </td>
+                    </tr>
+                </table>
 
-            <section class="content-footer">
-                <div class="dt-buttons btn-group" style="margin-left:10px; margin-bottom:10px">
-                    {{ link_to_route('movements.previous_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-left']) }}
-                    <div class="btn btn-default">
-                        {{ Session::get('month_reference') . ' / ' . Session::get('year_reference') }}
+                @include('movements.table')
+
+                <section class="content-footer">
+                    <div class="dt-buttons btn-group" style="margin-left:10px; margin-bottom:10px">
+                        {{ link_to_route('movements.previous_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-left']) }}
+                        <div class="btn btn-default">
+                            {{ Session::get('month_reference') . ' / ' . Session::get('year_reference') }}
+                        </div>
+                        {{ link_to_route('movements.next_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-right']) }}
                     </div>
-                    {{ link_to_route('movements.next_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-right']) }}
-                </div>
-            </section>
+                </section>
+
+                <section class="content-footer">
+                    <div class="dt-buttons btn-group" style="margin-left:10px; margin-bottom:10px">
+                        {{ Form::open(['url' => '/movements','id'=>'search']) }}
+                        {{ Form::label('name', 'Search:') }}
+                            <br>
+                            <div class="form-group">
+                                Categories <br>
+                                @foreach ($categories as $key => $item)
+                                    {{ Form::checkbox($key, 0, ['class'=>'checkbox']) }}
+                                    {{ Form::label($item) }}<br>
+                                @endforeach
+                            </div>
+                            <div class="form-group">
+                                Bank Accounts<br>
+                                @foreach ($bank_accounts as $key => $item)
+                                    {{ Form::checkbox($key, 0, ['class'=>'checkbox']) }}
+                                    {{ Form::label($item) }}<br>
+                                @endforeach
+                            </div>
+                            <div class="form-group">
+                                Credit Cards<br>
+                                @foreach ($credit_cards as $key => $item)
+                                    {{ Form::checkbox($key, 0, ['class'=>'checkbox']) }}
+                                    {{ Form::label($item) }}<br>
+                                @endforeach
+                            </div>
+                        {{ Form::submit('Search', ['class' => 'btn btn-primary']) }}
+                        {{ Form::close() }}
+                    </div>
+                </section>
+
+            </div>
+            
         </div>
     </div>
-
 @endsection
 

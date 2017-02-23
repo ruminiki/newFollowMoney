@@ -43,7 +43,15 @@ class MovementController extends AppBaseController
      */
     public function index(MovementDataTable $movementDataTable)
     {
-        return $movementDataTable->render('movements.index');
+        $credit_cards = CreditCard::orderBy('description', 'asc')->pluck('description', 'id');
+        $categories = Category::orderBy('description', 'asc')->pluck('description', 'id');
+        $bank_accounts = BankAccount::orderBy('description', 'asc')->pluck('description', 'id');
+        return $movementDataTable->render('movements.index', 
+                                         ['credit_cards'=>$credit_cards,
+                                          'bank_accounts'=>$bank_accounts,
+                                          'categories'=>$categories,
+                                          'previous_balance'=>$this->calculePreviousBalance(),
+                                          'month_balance'=>$this->calculeMonthBalance()]);
     }
 
     /**
@@ -275,5 +283,32 @@ class MovementController extends AppBaseController
             $value = substr($value,0,-2) . '.' . substr($value,-2);
         }
         return $value;
+    }
+
+    private function calculePreviousBalance(){
+        //====PREVIOUS BALANCE
+        $previous_credit = Movement::whereRaw('user_id = ? and movements.maturity_date < ? and operation = ?', 
+                                            [Auth::id(), 
+                                            Carbon::createFromDate(Session::get('year_reference'), Session::get('month_reference'), 01), 
+                                            Movement::CREDIT])->sum('value');
+
+        $previous_debit = Movement::whereRaw('user_id = ? and movements.maturity_date < ? and operation = ?', 
+                                            [Auth::id(), 
+                                            Carbon::createFromDate(Session::get('year_reference'), Session::get('month_reference'), 01), 
+                                            Movement::DEBIT])->sum('value');
+
+        return $previous_credit - $previous_debit;
+    }
+
+    private function calculeMonthBalance(){
+        $credit = Movement::whereRaw('user_id = ? and operation = ? and MONTH(movements.maturity_date) = ? and YEAR(movements.maturity_date) = ?', 
+                                    [Auth::id(), Movement::CREDIT,
+                                    Session::get('month_reference'), Session::get('year_reference')])->sum('value');
+
+        $debit = Movement::whereRaw('user_id = ? and operation = ? and MONTH(movements.maturity_date) = ? and YEAR(movements.maturity_date) = ?', 
+                                    [Auth::id(), Movement::DEBIT,
+                                    Session::get('month_reference'), Session::get('year_reference')])->sum('value');
+
+        return $credit - $debit;
     }
 }
