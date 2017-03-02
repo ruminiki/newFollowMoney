@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
+use App\Models\CreditCard;
+use App\Models\CreditCardInvoice;
+use Auth;
+use Session;
+use Request as _Request;
 
 class CreditCardInvoiceController extends AppBaseController
 {
@@ -30,10 +35,24 @@ class CreditCardInvoiceController extends AppBaseController
     public function index(Request $request)
     {
         $this->creditCardInvoiceRepository->pushCriteria(new RequestCriteria($request));
-        $creditCardInvoices = $this->creditCardInvoiceRepository->all();
+        $invoices = $this->creditCardInvoiceRepository->all();
+        $credit_cards = CreditCard::orderBy('description', 'asc')->whereRaw('user_id = ?', [Auth::id()])->pluck('description', 'id');
+
+        $min_year = date('Y');
+        $max_year = date('Y') + 1;
+
+        foreach ($invoices as $invoice) {
+            if ( $invoice->reference_year < $min_year ){
+                $min_year = $invoice->reference_year;
+            }
+        }
 
         return view('creditCardInvoices.index')
-            ->with('creditCardInvoices', $creditCardInvoices);
+            ->with('invoices', array())
+            ->with('credit_cards', $credit_cards)
+            ->with('min_year', $min_year)
+            ->with('max_year', $max_year);
+
     }
 
     /**
@@ -146,10 +165,68 @@ class CreditCardInvoiceController extends AppBaseController
             return redirect(route('creditCardInvoices.index'));
         }
 
-        $this->creditCardInvoiceRepository->delete($id);
+        if ( count($creditCardInvoice->movements) > 0 ){
+            Flash::warning('Cannot delete invoice with movements associateds. Pleas remove movements from invoice and try again!');
+        }else{
+            $this->creditCardInvoiceRepository->delete($id);
+            Flash::success('Credit Card Invoice deleted successfully.');
+        }
 
-        Flash::success('Credit Card Invoice deleted successfully.');
+        return redirect(route('creditCards.invoices', ['id'=>$invoice->credit_card_id, 'year'=>Session::get('year_reference')]));
+    }
 
-        return redirect(route('creditCardInvoices.index'));
+    public function pay($id)
+    {
+        $invoice = $this->creditCardInvoiceRepository->findWithoutFail($id);
+
+        if (empty($invoice)) {
+            Flash::error('Credit Card Invoice not found');
+            return redirect(route('creditCardInvoices.index'));
+        }
+        $value = 0;
+        foreach ($invoice->movements as $movement) {
+            if ( $movement->isCredit() ){
+                $value -= $movement->value;
+            }else{
+                $value += $movement->value;
+            }
+        }
+
+        $invoice->value = $value;
+        $invoice->close();
+        $invoice->amount_paid = $value;
+
+        $invoice->save();
+
+        $invoices = CreditCardInvoice::whereRaw('credit_card_id = ? and user_id = ? and reference_year = ?', 
+                            [$invoice->credit_card_id, Auth::id(), Session::get('year_reference')])->get();
+
+        //Flash::success('Successful payment!');
+
+        if ( _Request::ajax() ){
+            $view = View::make('creditCardInvoices.table',compact('invoices'))->render();
+            return Response::json(array('html' => $view));
+        }else{
+            return redirect(route('creditCardInvoices.index'));    
+        }
+
+    }
+
+    public function unpay($id)
+    {
+        $invoice = $this->creditCardInvoiceRepository->findWithoutFail($id);
+
+        if (empty($invoice)) {
+            Flash::error('Credit Card Invoice not found');
+            return redirect(route('creditCardInvoices.index'));
+        }
+        
+        $invoice->reopen();
+        $invoice->save();
+
+        Flash::success('Successful unpayment!');
+
+        return redirect(route('creditCards.invoices', ['id'=>$invoice->credit_card_id, 'year'=>Session::get('year_reference')]));
+
     }
 }

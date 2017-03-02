@@ -62,6 +62,18 @@ class CreditCardInvoice extends Model
         return $this->status == CreditCardInvoice::OPEN;
     }
 
+    public function isClosed(){
+        return $this->status == CreditCardInvoice::CLOSED;
+    }
+
+    public function close(){
+        $this->status = CreditCardInvoice::CLOSED;
+    }
+
+    public function reopen(){
+        $this->status = CreditCardInvoice::OPEN;
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/

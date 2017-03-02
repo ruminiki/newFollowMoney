@@ -9,8 +9,15 @@ use App\Http\Requests\UpdateCreditCardRequest;
 use App\Repositories\CreditCardRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use App\Models\CreditCard;
+use App\Models\CreditCardInvoice;
+use App\Models\Movement;
 use Response;
 use Auth;
+use Session;
+use Log;
+use Request;
+use View;
 
 class CreditCardController extends AppBaseController
 {
@@ -147,6 +154,8 @@ class CreditCardController extends AppBaseController
             return redirect(route('creditCards.index'));
         }
 
+        //TODO: não pode remover se tiver alguma fatura em aberto
+
         $this->creditCardRepository->delete($id);
 
         Flash::success('Credit Card deleted successfully.');
@@ -161,5 +170,39 @@ class CreditCardController extends AppBaseController
             $limit = substr($limit,0,-2) . '.' . substr($limit,-2);
         }
         return $limit;
+    }
+
+    public function invoices($id, $year){
+        Session::put('year_reference', $year);
+        $credit_card  = CreditCard::whereRaw('id = ? and user_id = ?', [$id, Auth::id()])->first();
+        $credit_cards  = CreditCard::whereRaw('user_id = ?', [Auth::id()]);
+
+        if (empty($credit_card)) {
+            $credit_card = CreditCard::whereRaw('user_id = ?', Auth::id())->first();
+        }
+
+        //====LOAD INVOICES
+        $invoices = CreditCardInvoice::whereRaw('credit_card_id = ? and user_id = ? and reference_year = ?', 
+                            [$id, Auth::id(), $year])->with('movements')->get();
+
+        foreach ($invoices as $invoice) {
+            $value = 0;
+            $movements = $invoice->movements;
+            foreach ($movements as $movement) {
+                if ( $movement->isCredit() ){
+                    $value -= $movement->value;
+                }else{
+                    $value += $movement->value;
+                }
+            }
+            $invoice->value = $value;
+            Log::info('Invoice Credit Card: ' . $credit_card->description . ' Year: ' . Session::get('year_reference') . ' Value: ' . $value);
+        }
+
+        if ( Request::ajax() ){
+            $view = View::make('creditCardInvoices.table',compact('invoices'))->render();
+            return Response::json(array('html' => $view));
+        }
+        return View::make('creditCardInvoices.index',compact('credit_card', 'invoices'))->render();
     }
 }

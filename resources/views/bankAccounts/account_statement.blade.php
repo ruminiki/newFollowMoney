@@ -1,4 +1,3 @@
-<?
 @extends('layouts.app')
 
 @push('scripts')
@@ -15,19 +14,7 @@
         $("#bank_account_id").change(function(){
             var id = $("#bank_account_id").val();
             var month_reference = $("#month_reference").val();
-            var url = "/bankAccounts/".concat(id ,"/account_statement/", month_reference);
-            $.ajax({
-                type: 'GET',
-                url: url,
-                data: { id: id, month: month_reference },
-                enctype: 'multipart/form-data',
-                success: function(data){
-                    $('#container').replaceWith(data.html);
-                },
-                error: function(){
-                    alert('Erro no Ajax !');
-                }
-            },"html");
+            request(id, month);
         });
 
         $('[id^="month_"]').click(function(){
@@ -36,21 +23,28 @@
 
             var id = $("#bank_account_id").val();
             var month_reference = $('#'+this.id).attr('month');
-            var url = "/bankAccounts/".concat(id ,"/account_statement/", month_reference);
-            $.ajax({
-                type: 'GET',
-                url: url,
-                data: { id: id, month: month_reference },
-                enctype: 'multipart/form-data',
-                success: function(data){
-                    $('#container').replaceWith(data.html);
-                },
-                error: function(){
-                    alert('Erro no Ajax !');
-                }
-            },"html");
+            request(id, month);
 
         });
+
+        function request(id, month){
+            if ( id > 0 ){
+                var url = "/bankAccounts/".concat(id ,"/account_statement/", month);
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: { id: id, year: year },
+                    enctype: 'multipart/form-data',
+                    success: function(data){
+                        $('#container').replaceWith(data.html);
+                    },
+                    error: function(){
+                        alert('Erro ao carregar extrato !');
+                    }
+                },"html");  
+            }
+        }
+
 
     </script>
 

@@ -25,8 +25,14 @@ Route::get('bankAccounts/{id}/account_statement/{month}',
 	['as' => 'bankAccounts.account_statement', 'uses' => 'BankAccountController@account_statement']);
 Route::resource('bankAccounts', 'BankAccountController');
 
+Route::get('creditCards/{id}/invoices/{year}', 
+	['as' => 'creditCards.invoices', 'uses' => 'CreditCardController@invoices']);
 Route::resource('creditCards', 'CreditCardController');
 
+Route::get('creditCardInvoices/{id}/pay', 
+	['as' => 'creditCardInvoices.pay', 'uses' => 'CreditCardInvoiceController@pay']);
+Route::get('creditCardInvoices/{id}/unpay', 
+	['as' => 'creditCardInvoices.unpay', 'uses' => 'CreditCardInvoiceController@unpay']);
 Route::resource('creditCardInvoices', 'CreditCardInvoiceController');
 
 Route::resource('paymentForms', 'PaymentFormController');

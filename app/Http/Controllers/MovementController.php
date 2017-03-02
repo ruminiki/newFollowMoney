@@ -171,7 +171,7 @@ class MovementController extends AppBaseController
      */
     public function update($id, UpdateMovementRequest $request)
     {
-        $movement_old = $this->movementRepository->findWithoutFail($id);
+        $movement_old = $this->movementRepository->findWithoutFail($id)->with('creditCardInvoice')->first();
 
         if (empty($movement_old)) {
             Flash::error('Movement not found');
@@ -191,18 +191,24 @@ class MovementController extends AppBaseController
         //====VERIFY IF HAS CREDIT CARD INVOICE AND IF THIS IS CLOSED
         //====ON THIS CASE VERIFY IF THE VALUE, CREDIT CARD AND DATE MATURITY IS CHANCHED
         try{
-            if ( $movement_old->credit_card_invoice != null && $movement_old->credit_card_invoice_id > 0 ){
-                if ( $movement_old->credit_card_invoice->isClosed() ){
+            if ( $movement_old->creditCardInvoice != null && $movement_old->credit_card_invoice_id > 0 ){
+                if ( $movement_old->creditCardInvoice->isClosed() ){
                     if ( $movement_old->creditCard != null && $movement_old->credit_card_id > 0 ){
-                        //SE O CARTÃO DE CRÉDITO FOI ALTERADO
                         if ( $movement_old->credit_card_id != $movement->credit_card_id ){
                             throw new Exception("Error update movement. Invoice is closed");
                         }
-                        //SE O VALOR FOI ALTERADO
+                        if ( $movement_old->operation != $movement->operation ){
+                            throw new Exception("Error update movement. Invoice is closed");
+                        }
+                        if ( $movement_old->status != $movement->status ){
+                            throw new Exception("Error update movement. Invoice is closed");
+                        }            
+                        if ( $movement_old->bank_account_id != $movement->bank_account_id ){
+                            throw new Exception("Error update movement. Invoice is closed");
+                        }            
                         if ( $movement_old->value != $movement->value ){
                             throw new Exception("Error update movement. Invoice is closed");      
                         }
-                        //SE A DATA DE VENCIMENTO FOI ALTERADA
                         if ( date_format($movement_old->maturity_date, 'Ymd') != date_format($movement->maturity_date, 'Ymd') ) {
                             throw new Exception("Error update movement. Invoice is closed");        
                         }
@@ -227,7 +233,7 @@ class MovementController extends AppBaseController
      */
     public function destroy($id)
     {
-        $movement = $this->movementRepository->findWithoutFail($id);
+        $movement = $this->movementRepository->findWithoutFail($id)->with('creditCardInvoice')->first();
 
         if (empty($movement)) {
             Flash::error('Movement not found');
@@ -235,9 +241,10 @@ class MovementController extends AppBaseController
         }
 
         //DO NOT DESTROY IF MOVEMENT IN A INVOICE CLOSED
-        if ( $movement->credit_card_invoice != null && $movement->credit_card_invoice_id > 0 ){
-            if ( $movement->credit_card_invoice->isClosed() ){
-                return Redirect::back()->withErrors('This movement is on an enclosed invoice. So it can not be deleted. Please reopen invoice to delete it.')->withInput();
+        if ( $movement->credit_card_invoice_id > 0 ){
+            if ( $movement->creditCardInvoice->isClosed() ){
+                Flash::warning('This movement is on an enclosed invoice. So it can not be deleted. Please reopen invoice to delete it.');
+                return Redirect::back();        
             }
         }  
 
