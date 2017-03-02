@@ -37,36 +37,39 @@
                     </div>
                 </section>
 
-                <section class="content-footer">
-                    <div class="dt-buttons btn-group" style="margin-left:10px; margin-bottom:10px">
-                        {{ Form::open(['url' => '/movements','id'=>'search']) }}
-                        {{ Form::label('name', 'Search:') }}
-                            <br>
-                            <div class="form-group">
+                <!-- <section class="content-footer">
+                    {{ Form::open(['url' => '/movements','id'=>'search']) }}
+                    
+                    <table class="table table-bordered" id="account-statements-table">
+                        <tr>
+                            <td colspan="6">
+                                {{ Form::label('name', 'Search:') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 Categories <br>
-                                @foreach ($categories as $key => $item)
-                                    {{ Form::checkbox($key, 0, ['class'=>'checkbox']) }}
-                                    {{ Form::label($item) }}<br>
-                                @endforeach
-                            </div>
-                            <div class="form-group">
+                                {!! Form::select('category_id', 
+                                     $categories->all('description'), 
+                                     null, ['placeholder' => 'SELECT...', 'class' => 'form-control']) !!}
+                            <td>
                                 Bank Accounts<br>
-                                @foreach ($bank_accounts as $key => $item)
-                                    {{ Form::checkbox($key, 0, ['class'=>'checkbox']) }}
-                                    {{ Form::label($item) }}<br>
-                                @endforeach
-                            </div>
-                            <div class="form-group">
+                                {!! Form::select('bank_account_id', 
+                                     $bank_accounts->all('description'), 
+                                     null, ['placeholder' => 'SELECT...', 'class' => 'form-control']) !!}
+                            </td>
+
+                            <td>
                                 Credit Cards<br>
-                                @foreach ($credit_cards as $key => $item)
-                                    {{ Form::checkbox($key, 0, ['class'=>'checkbox']) }}
-                                    {{ Form::label($item) }}<br>
-                                @endforeach
-                            </div>
-                        {{ Form::submit('Search', ['class' => 'btn btn-primary']) }}
-                        {{ Form::close() }}
-                    </div>
-                </section>
+                                {!! Form::select('credit_card_id', 
+                                     $credit_cards->all('description'), 
+                                     null, ['placeholder' => 'SELECT...', 'class' => 'form-control']) !!}
+                            </td>
+                        </tr>
+                    </table>
+                    {{ Form::submit('Search', ['class' => 'btn btn-primary']) }}
+                    {{ Form::close() }}
+                </section> -->
 
             </div>
             

@@ -1,3 +1,4 @@
+<?
 @extends('layouts.app')
 
 @push('scripts')
@@ -10,72 +11,78 @@
                 return false;
             }
         }
+
+        $("#bank_account_id").change(function(){
+            var id = $("#bank_account_id").val();
+            var month_reference = $("#month_reference").val();
+            var url = "/bankAccounts/".concat(id ,"/account_statement/", month_reference);
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: { id: id, month: month_reference },
+                enctype: 'multipart/form-data',
+                success: function(data){
+                    $('#container').replaceWith(data.html);
+                },
+                error: function(){
+                    alert('Erro no Ajax !');
+                }
+            },"html");
+        });
+
+        $('[id^="month_"]').click(function(){
+            $('.active').attr('class','btn btn-default pull-left btn-sm');
+            $('#'+this.id).attr('class','btn btn-default pull-left btn-sm active');
+
+            var id = $("#bank_account_id").val();
+            var month_reference = $('#'+this.id).attr('month');
+            var url = "/bankAccounts/".concat(id ,"/account_statement/", month_reference);
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: { id: id, month: month_reference },
+                enctype: 'multipart/form-data',
+                success: function(data){
+                    $('#container').replaceWith(data.html);
+                },
+                error: function(){
+                    alert('Erro no Ajax !');
+                }
+            },"html");
+
+        });
+
     </script>
+
 @endpush
 
 @section('content')
+
     <section class="content-header">
-        <h3 class="pull-left">{!! $bank_account->description . ' - ' . $bank_account->number . ' - ' . date('F', mktime(0, 0, 0, Session::get('month_reference'), 10)) . '/' . Session::get('year_reference') !!}</h3>
-    </section>
-    <div class="content">
-        <div class="clearfix"></div>
-
-        @include('flash::message')
-
-        <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
-                <table class="table table-bordered" id="account-statements-table">
-                    <tr>
-                        <td colspan="6">{{ 'Previous Balance: R$ '. number_format($previous_balance, 2, ',', '.')  }}</td>
-                    </tr>
-                    <tr>
-                        <th>Emission</th>
-                        <th>Expiration</th>
-                        <th>Operation</th>
-                        <th>Status</th>
-                        <th>Value</th>
-                        <th>Actions</th>
-                    </tr>
-                    @foreach($movements as $movement)
-                        <tr>
-                            <td>{{ date_format($movement->emission_date,"d-m-Y") }}</td>
-                            <td>{{ date_format($movement->maturity_date,"d-m-Y") }}</td>
-                            <td>{{ $movement->operation }}</td>
-                            <td>{{ $movement->status }}</td>
-                            <td>{{ 'R$ '. number_format($movement->value, 2, ',', '.') }}</td>
-                            <td>
-                                <div class="btn-group" style="width:130px;">
-                                    {!! Form::open(['action' => ['MovementController@destroy', $movement->id], 'method' => 'delete', 'onsubmit' => 'return confirmDelete()']) !!}
-                                        {{ link_to_route('movements.show', 'View', $movement->id, ['class' => 'btn btn-default   btn-xs']) }}
-
-                                        {{ link_to_route('movements.edit', 'Edit', $movement->id, ['class' => 'btn btn-default btn-xs']) }}
-
-                                        {!! Form::submit('Delete',['class'=>'btn btn-danger btn-xs']) !!}
-                                    {!! Form::close() !!}
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                    <tr>
-                        <td colspan="6">{{ 'Credits: R$ '. number_format($credits, 2, ',', '.') . ' ' . 'Debits: R$ ' . number_format($debits, 2, ',', '.') . ' ' . 'Balance: R$ ' . number_format(($previous_balance + $credits - $debits), 2, ',', '.')  }}</td>
-                    </tr>
-                </table>
-                
-                <br>
-
-                <section class="content-footer">
-                    <div class="dt-buttons btn-group" style="margin-left:0px; margin-bottom:10px">
-                        {{ link_to_route('bankAccounts.previous_month', '', $bank_account->id, ['class' => 'btn btn-default fa fa-chevron-left']) }}
-                        <div class="btn btn-default">
-                            {{ Session::get('month_reference') . ' / ' . Session::get('year_reference') }}
-                        </div>
-                        {{ link_to_route('bankAccounts.next_month', '', $bank_account->id, ['class' => 'btn btn-default fa fa-chevron-right']) }}
-                        <a class="btn btn-default" href="{!! route('bankAccounts.index') !!}">Voltar</a>
-                    </div>
-                </section>
+        <div class="row">
+            <div class="col-sm-6">
+                {!! Form::label('bank_account_id', 'Bank Account:') !!}
+                {!! Form::select('bank_account_id', 
+                     $bank_accounts->all('description'), 
+                     $bank_account->id,
+                     ['placeholder' => 'SELECT...', 'class' => 'form-control']) !!}
             </div>
+            
+            <div class="row">
+                {!! Form::label('bank_account_id', 'Month Reference:') !!}
+                <div id="buttons_container" class="col-sm-6">
+                    <div class="btn btn-default pull-left btn-sm active">{{ Session::get('year_reference') }}</div>
+                    @foreach (range(1, 12) as $month)
+
+                        {{ Form::button(date('M', mktime(0, 0, 0, $month, 10)),
+                            ['class' => $month == Session::get('month_reference') ? 'btn btn-default pull-left btn-sm active' : 'btn btn-default pull-left btn-sm', 'width'=> '80px',  'id'=>'month_'.$month, 'name'=>'month_'.$month, 'month'=>$month] ) }}
+                        
+                    @endforeach
+                </div>
+            </div> 
         </div>
-    </div>
-    
+    </section>
+
+    @include('bankAccounts.account_statement_content')
+
 @endsection

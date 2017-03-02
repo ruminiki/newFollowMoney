@@ -19,22 +19,10 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 
-/*Route::post('categories/search', [
-  'as' => 'categories.search', 
-  'uses' => 'CategoryController@search'
-]);*/
-/*Route::post('categories', 'CategoryController', [
-    'search'  => 'datatables.search',
-]);*/
-/*Route::get('categories/search', [
-  'as' => 'categories.search', 
-  'uses' => 'CategoryController@search'
-]);*/
 Route::resource('categories', 'CategoryController');
 
-Route::get('bankAccounts/next_month/{id}', ['as' => 'bankAccounts.next_month', 'uses' => 'BankAccountController@next_month']);
-Route::get('bankAccounts/previous_month/{id}', ['as' => 'bankAccounts.previous_month', 'uses' => 'BankAccountController@previous_month']);
-Route::get('bankAccounts/account_statement/{id}', ['as' => 'bankAccounts.account_statement', 'uses' => 'BankAccountController@account_statement']);
+Route::get('bankAccounts/{id}/account_statement/{month}', 
+	['as' => 'bankAccounts.account_statement', 'uses' => 'BankAccountController@account_statement']);
 Route::resource('bankAccounts', 'BankAccountController');
 
 Route::resource('creditCards', 'CreditCardController');

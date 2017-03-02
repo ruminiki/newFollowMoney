@@ -14,10 +14,13 @@ use Auth;
 use DB;
 use App\Models\AccountStatement;
 use App\Models\Movement;
+use App\Models\BankAccount;
 use Yajra\Datatables\Datatables;
 use Session;
 use Carbon\Carbon;
 use Log;
+use View;
+use Request;
 
 class BankAccountController extends AppBaseController
 {
@@ -159,12 +162,13 @@ class BankAccountController extends AppBaseController
         return redirect(route('bankAccounts.index'));
     }
 
-    public function account_statement($id){
-        $bank_account = $this->bankAccountRepository->findWithoutFail($id);
+    public function account_statement($id, $month){
+        Session::put('month_reference', $month);
+        $bank_account  = $this->bankAccountRepository->findWithoutFail($id);
+        $bank_accounts = BankAccount::orderBy('description', 'asc')->whereRaw('user_id = ?', [Auth::id()])->pluck('description', 'id');
 
         if (empty($bank_account)) {
-            Flash::error('Bank Account not found');
-            return redirect(route('bankAccounts.index'));
+            $bank_account = BankAccount::whereRaw('user_id = ?', Auth::id())->first();
         }
 
         //====LOAD MOVEMENTS
@@ -198,44 +202,33 @@ class BankAccountController extends AppBaseController
 
         $previous_balance = $previous_credit - $previous_debit;
 
+        Log::info('Bank Account: ' . $bank_account->description);
+        Log::info('Month: ' . date('M', mktime(0, 0, 0, $month, 10)));
         Log::info('Previous Credit: ' . $previous_credit . '  -  ' . 'Previous Debit: ' . $previous_debit);
         Log::info('Previous Balance: ' . $previous_balance);
 
-        return view('bankAccounts.account_statement')
+
+        /*$view = View::make('bankAccounts.account_statement')
                ->with('movements', $movements)
                ->with('bank_account', $bank_account)
+               ->with('bank_accounts', $bank_accounts)
                ->with('credits', $credits)
                ->with('debits', $debits)
-               ->with('previous_balance', $previous_balance);
-    }
+               ->with('previous_balance', $previous_balance);*/
 
-    public function next_month($bank_account_id){
-        $m = Session::get('month_reference');
-        $y = Session::get('year_reference');
-        if ( $m == 12 ){
-            $m = 01;
-            $y += 1;
-        }else{
-            $m += 1;
+
+        if ( Request::ajax() ){
+            $view = View::make('bankAccounts.account_statement_content',
+                compact('movements', 'bank_account', 'credits', 'debits', 'previous_balance'))->render();
+            return Response::json(array('html' => $view));
+            /*$sections = $view->renderSections(); 
+            return json_encode($sections); */
         }
-        Session::put('month_reference', $m);
-        Session::put('year_reference', $y);
 
-        return redirect(route('bankAccounts.account_statement', $bank_account_id));
+        return View::make('bankAccounts.account_statement',
+                compact('movements', 'bank_account', 'bank_accounts', 'credits', 'debits', 'previous_balance'))->render();
+
+        //return $view;
     }
 
-    public function previous_month($bank_account_id){
-        $m = Session::get('month_reference');
-        $y = Session::get('year_reference');
-        if ( $m == 01 ){
-            $m = 12;
-            $y -= 1;
-        }else{
-            $m -= 1;
-        }
-        Session::put('month_reference', $m);
-        Session::put('year_reference', $y);
-        
-        return redirect(route('bankAccounts.account_statement', $bank_account_id));
-    }
 }
