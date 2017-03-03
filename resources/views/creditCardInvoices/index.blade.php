@@ -43,10 +43,9 @@
             }
         }
 
-        function pay(){
-            var id = $("#credit_card_id").val();
+        function pay(id){
             if ( id > 0 ){
-                var url = "/creditCardInvoices/".concat(id ,"/pay/");
+                var url = "/creditCardInvoices/" + id + "/pay/";
                 $.ajax({
                     type: 'GET',
                     url: url,
@@ -54,6 +53,7 @@
                     enctype: 'multipart/form-data',
                     success: function(data){
                         $('#container').replaceWith(data.html);
+                        //alert(data.html);
                     },
                     error: function(){
                         alert('Erro ao carregar as faturas !');
@@ -62,10 +62,9 @@
             }
         }
 
-        function unpay(){
-            var id = $("#credit_card_id").val();
+        function unpay(id){
             if ( id > 0 ){
-                var url = "/creditCardInvoices/".concat(id ,"/unpay/");
+                var url = "/creditCardInvoices/" + id + "/unpay/";
                 $.ajax({
                     type: 'GET',
                     url: url,
@@ -73,6 +72,7 @@
                     enctype: 'multipart/form-data',
                     success: function(data){
                         $('#container').replaceWith(data.html);
+                        //alert(data.html);
                     },
                     error: function(){
                         alert('Erro ao carregar as faturas !');
@@ -87,6 +87,8 @@
 
 @section('content')
     <section class="content-header">
+        <h1 class="pull-left">Credit Card Invoices</h1>
+        <div class="clearfix"></div>
         <div class="row">
             <div class="col-sm-6">
                 {!! Form::label('credit_card_id', 'Credit Card:') !!}

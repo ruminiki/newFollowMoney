@@ -13,13 +13,13 @@
     </script>
 @endpush
 <!-- Description Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-5">
     {!! Form::label('description', 'Description:') !!}
     {!! Form::text('description', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Number Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-3">
     {!! Form::label('number', 'Number:') !!}
     {!! Form::text('number', null, ['class' => 'form-control']) !!}
 </div>

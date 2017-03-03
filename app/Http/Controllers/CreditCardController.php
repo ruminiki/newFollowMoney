@@ -175,19 +175,22 @@ class CreditCardController extends AppBaseController
     public function invoices($id, $year){
         Session::put('year_reference', $year);
         $credit_card  = CreditCard::whereRaw('id = ? and user_id = ?', [$id, Auth::id()])->first();
-        $credit_cards  = CreditCard::whereRaw('user_id = ?', [Auth::id()]);
 
         if (empty($credit_card)) {
             $credit_card = CreditCard::whereRaw('user_id = ?', Auth::id())->first();
         }
 
+        Session::put('selected_credit_card_id', $id);
+
         //====LOAD INVOICES
         $invoices = CreditCardInvoice::whereRaw('credit_card_id = ? and user_id = ? and reference_year = ?', 
                             [$id, Auth::id(), $year])->with('movements')->get();
 
+
         foreach ($invoices as $invoice) {
             $value = 0;
             $movements = $invoice->movements;
+
             foreach ($movements as $movement) {
                 if ( $movement->isCredit() ){
                     $value -= $movement->value;

@@ -22,7 +22,7 @@
                     </tr>
                     @foreach($invoices as $invoice)
                         <tr>
-                            <td>{{ $invoice->reference_month . '/' . $invoice->reference_year }}</td>
+                            <td>{{ date('M', mktime(0, 0, 0, $invoice->reference_month, 10)) . '/' . $invoice->reference_year }}</td>
                             <td>{{ date_format($invoice->maturity_date,"d-m-Y") }}</td>
                             <td>{{ $invoice->status }}</td>
                             <td>{{ 'R$ '. number_format($invoice->value, 2, ',', '.') }}</td>
@@ -31,8 +31,8 @@
                                 <div class="btn-group">
                                     {!! Form::open(['action' => ['CreditCardInvoiceController@destroy', $invoice->id], 'method' => 'delete', 'onsubmit' => 'return confirmDelete()']) !!}
                                     {{ link_to_route('creditCardInvoices.show', 'View', $invoice->id, ['class' => 'btn btn-default   btn-xs']) }}
-                                    {{ Form::button('Pay',['id'=> 'btn_pay', 'class' => 'btn btn-default btn-xs', 'onclick'=>'pay()'] ) }}
-                                    {{ Form::button('Unpay',['id'=> 'btn_unpay', 'class' => 'btn btn-default btn-xs', 'onclick'=>'unpay()'] ) }}
+                                    {{ Form::button('Pay',['id'=> 'btn_pay', 'class' => 'btn btn-default btn-xs', 'onclick'=>"pay(".$invoice->id.")"] ) }}
+                                    {{ Form::button('Unpay',['id'=> 'btn_unpay', 'class' => 'btn btn-default btn-xs', 'onclick'=>"unpay(".$invoice->id.")"] ) }}
                                     {!! Form::submit('Delete',['class'=>'btn btn-danger btn-xs']) !!}
                                     {!! Form::close() !!}
                                 </div>

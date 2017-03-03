@@ -35,52 +35,47 @@
 @endpush
 
 <!-- Description Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-10">
     {!! Form::label('description', 'Description:') !!}
     {!! Form::text('description', null, ['class' => 'form-control']) !!}
 </div>
 
+<div class="clearfix"></div>
+
 <!-- Emission Date Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-2">
     {!! Form::label('emission_date', 'Emission Date:') !!}
     {!! Form::date('emission_date', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Maturity Date Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-2">
     {!! Form::label('maturity_date', 'Maturity Date:') !!}
     {!! Form::date('maturity_date', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Value Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-2">
     {!! Form::label('value', 'Value:') !!}
     {!! Form::text('value', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Operation Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-2">
     {!! Form::label('operation', 'Operation:') !!}
     {!! Form::select('operation', array('CREDIT' => 'CREDIT', 'DEBIT' => 'DEBIT'), 'DEBIT', ['class' => 'form-control']) !!}
 </div>
 
 <!-- Status Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-2">
     {!! Form::label('status', 'Status:') !!}
     {!! Form::select('status', array('OPEN' => 'OPEN', 'PAID' => 'PAID'), 'OPEN', ['class' => 'form-control']) !!}
 </div>
 
-<!-- Payment Form Id Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('payment_form_id', 'Payment Form:') !!}
-    {!! Form::select('payment_form_id', 
-                 $paymentForms->all('description'), 
-                 empty($movement->paymentForm) ? -1 : $movement->paymentForm->id, 
-                 ['placeholder' => 'SELECT...', 'class' => 'form-control']) !!}
-</div>
+<div class="clearfix"></div>
 
 <!-- Category Id Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-4">
     {!! Form::label('category_id', 'Category:') !!}
     {!! Form::select('category_id', 
                      $categories->all('description'), 
@@ -88,8 +83,19 @@
                      ['placeholder' => 'SELECT...', 'class' => 'form-control']) !!}
 </div>
 
+<div class="clearfix"></div>
+
+<!-- Payment Form Id Field -->
+<div class="form-group col-lg-4">
+    {!! Form::label('payment_form_id', 'Payment Form:') !!}
+    {!! Form::select('payment_form_id', 
+                 $paymentForms->all('description'), 
+                 empty($movement->paymentForm) ? -1 : $movement->paymentForm->id, 
+                 ['placeholder' => 'SELECT...', 'class' => 'form-control']) !!}
+</div>
+
 <!-- Bank Account Id Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-3">
     {!! Form::label('bank_account_id', 'Bank Account:') !!}
     {!! Form::select('bank_account_id', 
                  $bankAccounts->all('description'), 
@@ -98,7 +104,7 @@
 </div>
 
 <!-- Credit Card Id Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-3">
     {!! Form::label('credit_card_id', 'Credit Card:') !!}
     {!! Form::select('credit_card_id', 
                  $creditCards->all('description'), 
@@ -107,7 +113,7 @@
 </div>
 
 <!-- Submit Field -->
-<div class="form-group col-sm-12">
+<div class="form-group col-lg-12">
     {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
     {{ link_to(URL::previous(), 'Cancel', ['class' => 'btn btn-default']) }}
 </div>

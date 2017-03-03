@@ -37,8 +37,8 @@ class CreditCardInvoiceController extends AppBaseController
     {
         $this->creditCardInvoiceRepository->pushCriteria(new RequestCriteria($request));
         $invoices = $this->creditCardInvoiceRepository->all();
-        $credit_cards = CreditCard::orderBy('description', 'asc')->whereRaw('user_id = ?', [Auth::id()])->pluck('description', 'id');
 
+        //define o ano a ser apresentado ao usuário
         $min_year = date('Y');
         $max_year = date('Y') + 1;
 
@@ -48,9 +48,26 @@ class CreditCardInvoiceController extends AppBaseController
             }
         }
 
+        //carrega os cartões de crédito
+        $credit_cards = CreditCard::orderBy('description', 'asc')->whereRaw('user_id = ?', [Auth::id()])->pluck('description', 'id');
+
+        $credit_card = null;
+        if ( !empty(Session::get('selected_credit_card_id'))){
+            $credit_card = CreditCard::whereRaw('user_id = ? and id = ?', [Auth::id(), Session::get('selected_credit_card_id')])->first();
+        }else{
+            $credit_card = CreditCard::whereRaw('user_id = ?', [Auth::id()])->first();
+        }
+
+        if ( $credit_card != null ){
+            $invoices = CreditCardInvoice::whereRaw('credit_card_id = ? and reference_year = ?', [Session::get('selected_credit_card_id'), Session::get('year_reference')])->get();    
+        }else{
+            $invoices = array();
+        }
+
         return view('creditCardInvoices.index')
-            ->with('invoices', array())
+            ->with('invoices', $invoices)
             ->with('credit_cards', $credit_cards)
+            ->with('credit_card', $credit_card)
             ->with('min_year', $min_year)
             ->with('max_year', $max_year);
 
@@ -203,7 +220,6 @@ class CreditCardInvoiceController extends AppBaseController
         $invoice->save();
 
         Flash::success('Successful payment!');
-
         return redirect(route('creditCards.invoices', ['id'=>$invoice->credit_card_id, 'year'=>Session::get('year_reference')]));
 
     }
@@ -221,7 +237,6 @@ class CreditCardInvoiceController extends AppBaseController
         $invoice->save();
 
         Flash::success('Successful unpayment!');
-
         return redirect(route('creditCards.invoices', ['id'=>$invoice->credit_card_id, 'year'=>Session::get('year_reference')]));
 
     }

@@ -27,25 +27,25 @@
 @endpush
 
 <!-- Description Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-10">
     {!! Form::label('description', 'Description:') !!}
     {!! Form::text('description', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Limit Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-lg-3">
     {!! Form::label('limit', 'Limit:') !!}
     {!! Form::text('limit', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Invoice Date Field -->
-<div class="form-group col-sm-1">
+<div class="form-group col-lg-1">
     {!! Form::label('invoice_day', 'Invoice Date:') !!}
     {!! Form::text('invoice_day', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Closing Date Field -->
-<div class="form-group col-sm-1">
+<div class="form-group col-lg-1">
     {!! Form::label('closing_day', 'Closing Date:') !!}
     {!! Form::text('closing_day', null, ['class' => 'form-control']) !!}
 </div>

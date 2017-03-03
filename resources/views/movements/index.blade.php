@@ -43,30 +43,39 @@
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
-                <table class="table table-bordered" id="account-statements-table">
+                <div class="row">
+                    <div class="col-lg-4">
+                        {{ 'Previous Balance: R$ '. number_format($previous_balance, 2, ',', '.') }}
+                        <div class="clearfix"></div>
+                        {{ 'Month Balance: R$ ' . number_format($month_balance, 2, ',', '.') }}
+                        {{ 'Estimated Balance: R$ ' . number_format($previous_balance + $month_balance, 2, ',', '.') }}
+                    </div>
+
+                    <div id="buttons_month_container" class="col-lg-8">
+                        
+                        @foreach (range(12, 1) as $month)
+
+                            {{ link_to_route('movements.month', date('M', mktime(0, 0, 0, $month, 10)), $month, ['class' => $month == Session::get('month_reference') ? 'btn btn-default pull-right btn-sm active' : 'btn btn-default pull-right btn-sm', 'month'=>$month]) }}
+
+                        @endforeach
+                        {{ link_to_route('movements.next_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-right pull-right btn-sm', 'style'=>'margin-left:0px']) }}
+                        <div class="btn btn-default pull-right btn-sm active">{{ Session::get('year_reference') }}</div>
+                        {{ link_to_route('movements.previous_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-left pull-right btn-sm']) }}
+                    </div>
+
+                </div>
+
+            <!--     <table class="table table-bordered" id="account-statements-table">
                     <tr>
-                        <td colspan="3">
-                            {{ 'Previous Balance: R$ '. number_format($previous_balance, 2, ',', '.') . '   ' .
-                               'Month Balance: R$ ' . number_format($month_balance, 2, ',', '.') . '   ' .
-                               'Estimated Balance: R$ ' . number_format($previous_balance + $month_balance, 2, ',', '.') }}
+                        <td width>
+                            
                         </td>
                         <td colspan="3">
                             <div class="row">
-                                <div id="buttons_month_container" class="col-sm-12">
-                                    
-                                    @foreach (range(12, 1) as $month)
-
-                                        {{ link_to_route('movements.month', date('M', mktime(0, 0, 0, $month, 10)), $month, ['class' => $month == Session::get('month_reference') ? 'btn btn-default pull-right btn-sm active' : 'btn btn-default pull-right btn-sm', 'month'=>$month]) }}
-
-                                    @endforeach
-                                    {{ link_to_route('movements.next_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-right pull-right btn-sm', 'style'=>'margin-left:0px']) }}
-                                    <div class="btn btn-default pull-right btn-sm active">{{ Session::get('year_reference') }}</div>
-                                    {{ link_to_route('movements.previous_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-left pull-right btn-sm']) }}
-                                </div>
                             </div> 
                         </td>
                     </tr>
-                </table>
+                </table> -->
                 <br>
 
                 @include('movements.table')
