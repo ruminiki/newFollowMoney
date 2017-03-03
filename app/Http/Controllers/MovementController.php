@@ -21,12 +21,14 @@ use Redirect;
 use Session;
 use Exception;
 use Carbon\Carbon;
+use View;
 
 class MovementController extends AppBaseController
 {
     
     /** @var  MovementRepository */
     private $movementRepository;
+    private $movementDataTable;
 
     public function __construct(MovementRepository $movementRepo)
     {
@@ -43,14 +45,9 @@ class MovementController extends AppBaseController
      */
     public function index(MovementDataTable $movementDataTable)
     {
-        $credit_cards = CreditCard::orderBy('description', 'asc')->pluck('description', 'id');
-        $categories = Category::orderBy('description', 'asc')->pluck('description', 'id');
-        $bank_accounts = BankAccount::orderBy('description', 'asc')->pluck('description', 'id');
+        $this->movementDataTable = $movementDataTable;
         return $movementDataTable->render('movements.index', 
-                                         ['credit_cards'=>$credit_cards,
-                                          'bank_accounts'=>$bank_accounts,
-                                          'categories'=>$categories,
-                                          'previous_balance'=>$this->calculePreviousBalance(),
+                                         ['previous_balance'=>$this->calculePreviousBalance(),
                                           'month_balance'=>$this->calculeMonthBalance()]);
     }
 
@@ -290,6 +287,22 @@ class MovementController extends AppBaseController
             $value = substr($value,0,-2) . '.' . substr($value,-2);
         }
         return $value;
+    }
+
+    public function month($month){
+        Session::put('month_reference', $month);
+        /*$previous_balance = $this->calculePreviousBalance();
+        $month_balance = $this->calculeMonthBalance();
+        //$view = View::make('movements.table', compact('previous_balance', 'month_balance'))->render();
+        
+        //$$view = $this->movementDataTable->render('movements.table', compact('previous_balance', 'month_balance'));
+        $this->movementDataTable = app('MovementDataTable');
+
+        Log::info("====Data Table======" . $this->movementDataTable);
+        $view = $this->movementDataTable->render('movements.table',['previous_balance'=>$this->calculePreviousBalance(),
+                           'month_balance'=>$this->calculeMonthBalance()]);
+        return Response::json(array('html' => $view));*/
+        return redirect(route('movements.index'));
     }
 
     private function calculePreviousBalance(){

@@ -39,4 +39,5 @@ Route::resource('paymentForms', 'PaymentFormController');
 
 Route::get('movements/next_month', ['as' => 'movements.next_month', 'uses' => 'MovementController@next_month']);
 Route::get('movements/previous_month', ['as' => 'movements.previous_month', 'uses' => 'MovementController@previous_month']);
+Route::get('movements/month/{month}', ['as' => 'movements.month', 'uses' => 'MovementController@month']);
 Route::resource('movements', 'MovementController');

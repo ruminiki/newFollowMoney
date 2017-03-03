@@ -2,31 +2,29 @@
 
 @push('scripts')
     <script type="text/javascript">
-        $('[id^="month_"]').click(function(){
-            $('#buttons_month_container').children().attr('class','btn btn-default pull-left btn-sm');
-            $('#'+this.id).attr('class','btn btn-default pull-left btn-sm active');
-            var id = $("#credit_card_id").val();
-            var year = $('#'+this.id).attr('year');
-            request(id, year);
-        });
 
-        function request(id, year){
-            if ( id > 0 ){
-                var url = "/creditCards/".concat(id ,"/invoices/", year);
-                $.ajax({
-                    type: 'GET',
-                    url: url,
-                    data: { id: id, year: year },
-                    enctype: 'multipart/form-data',
-                    success: function(data){
-                        $('#container').replaceWith(data.html);
-                    },
-                    error: function(){
-                        alert('Erro ao carregar as faturas !');
-                    }
-                },"html");  
-            }
-        }
+        /*$('[id^="month_"]').click(function(){
+            $('#buttons_month_container').children().attr('class','btn btn-default pull-right btn-sm');
+            $('#'+this.id).attr('class','btn btn-default pull-right btn-sm active');
+            var month = $('#'+this.id).attr('month');
+            var url = "/movements/month/" + month;
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: { month: month },
+                enctype: 'multipart/form-data',
+                success: function(data){
+                    //$('#container').replaceWith(data.html);
+                    //alert(data.html);
+                },
+                error: function(){
+                    alert('Erro ao carregar os lançamentos!');
+                }
+            },"html");  
+
+        });*/
+
     </script>
 @endpush
 
@@ -58,30 +56,20 @@
                                     
                                     @foreach (range(12, 1) as $month)
 
-                                        {{ Form::button(date('M', mktime(0, 0, 0, $month, 10)),
-                                            ['class' => $month == Session::get('month_reference') ? 'btn btn-default pull-right btn-sm active' : 'btn btn-default pull-right btn-sm', 'width'=> '80px',  'id'=>'month_'.$month, 'name'=>'month_'.$month, 'month'=>$month] ) }}
-                                        
-                                    @endforeach
+                                        {{ link_to_route('movements.month', date('M', mktime(0, 0, 0, $month, 10)), $month, ['class' => $month == Session::get('month_reference') ? 'btn btn-default pull-right btn-sm active' : 'btn btn-default pull-right btn-sm', 'month'=>$month]) }}
 
+                                    @endforeach
+                                    {{ link_to_route('movements.next_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-right pull-right btn-sm', 'style'=>'margin-left:0px']) }}
                                     <div class="btn btn-default pull-right btn-sm active">{{ Session::get('year_reference') }}</div>
+                                    {{ link_to_route('movements.previous_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-left pull-right btn-sm']) }}
                                 </div>
                             </div> 
                         </td>
                     </tr>
                 </table>
                 <br>
-                
-                @include('movements.table')
 
-                <section class="content-footer">
-                    <div class="dt-buttons btn-group" style="margin-left:10px; margin-bottom:10px">
-                        {{ link_to_route('movements.previous_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-left']) }}
-                        <div class="btn btn-default">
-                            {{ Session::get('month_reference') . ' / ' . Session::get('year_reference') }}
-                        </div>
-                        {{ link_to_route('movements.next_month', '', 0, ['class' => 'btn btn-default fa fa-chevron-right']) }}
-                    </div>
-                </section>
+                @include('movements.table')
 
             </div>
             
