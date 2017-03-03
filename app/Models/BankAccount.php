@@ -12,14 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class BankAccount extends Model
 {
-    use SoftDeletes;
-
     public $table = 'bank_accounts';
-    
-
-    protected $dates = ['deleted_at'];
-
-
     public $fillable = [
         'description',
         'number',

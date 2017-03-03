@@ -13,16 +13,16 @@
 
         $("#bank_account_id").change(function(){
             var id = $("#bank_account_id").val();
-            var month_reference = $("#month_reference").val();
+            var month = $("#month_reference").val();
             request(id, month);
         });
 
         $('[id^="month_"]').click(function(){
-            $('.active').attr('class','btn btn-default pull-left btn-sm');
+            $('#buttons_month_container').children().attr('class','btn btn-default pull-left btn-sm');
             $('#'+this.id).attr('class','btn btn-default pull-left btn-sm active');
 
             var id = $("#bank_account_id").val();
-            var month_reference = $('#'+this.id).attr('month');
+            var month = $('#'+this.id).attr('month');
             request(id, month);
 
         });
@@ -33,7 +33,7 @@
                 $.ajax({
                     type: 'GET',
                     url: url,
-                    data: { id: id, year: year },
+                    data: { id: id, month: month },
                     enctype: 'multipart/form-data',
                     success: function(data){
                         $('#container').replaceWith(data.html);
@@ -64,7 +64,7 @@
             
             <div class="row">
                 {!! Form::label('bank_account_id', 'Month Reference:') !!}
-                <div id="buttons_container" class="col-sm-6">
+                <div id="buttons_month_container" class="col-sm-6">
                     <div class="btn btn-default pull-left btn-sm active">{{ Session::get('year_reference') }}</div>
                     @foreach (range(1, 12) as $month)
 

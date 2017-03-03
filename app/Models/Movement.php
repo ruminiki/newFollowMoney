@@ -13,14 +13,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Movement extends Model
 {
-    use SoftDeletes;
-
     const CREDIT = 'CREDIT';
     const DEBIT = 'DEBIT';
 
     public $table = 'movements';
     
-    protected $dates = ['deleted_at, emission_date, maturity_date'];
+    protected $dates = ['emission_date, maturity_date'];
 
     public $fillable = [
         'description',

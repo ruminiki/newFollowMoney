@@ -18,7 +18,7 @@
         });
 
         $('[id^="year_"]').click(function(){
-            $('.active').attr('class','btn btn-default pull-left btn-sm');
+            $('#buttons_year_container').children().attr('class','btn btn-default pull-left btn-sm');
             $('#'+this.id).attr('class','btn btn-default pull-left btn-sm active');
             var id = $("#credit_card_id").val();
             var year = $('#'+this.id).attr('year');
@@ -43,7 +43,7 @@
             }
         }
 
-        $("#btn_pay").click(function(){
+        function pay(){
             var id = $("#credit_card_id").val();
             if ( id > 0 ){
                 var url = "/creditCardInvoices/".concat(id ,"/pay/");
@@ -60,9 +60,9 @@
                     }
                 },"html");  
             }
-        });
+        }
 
-        $("#btn_unpay").click(function(){
+        function unpay(){
             var id = $("#credit_card_id").val();
             if ( id > 0 ){
                 var url = "/creditCardInvoices/".concat(id ,"/unpay/");
@@ -79,7 +79,7 @@
                     }
                 },"html");  
             }
-        });
+        }
 
     </script>
 
@@ -98,7 +98,7 @@
             
             <div class="row">
                 {!! Form::label('credit_card_id', 'Year Reference:') !!}
-                <div id="buttons_container" class="col-sm-6">
+                <div id="buttons_year_container" class="col-sm-6">
                     @foreach (range($min_year, $max_year) as $year)
 
                         {{ Form::button($year,

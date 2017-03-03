@@ -13,15 +13,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CreditCardInvoice extends Model
 {
-    use SoftDeletes;
 
     const OPEN = 'OPEN';
     const CLOSED = 'CLOSED';
 
     public $table = 'credit_card_invoices';
     
-    protected $dates = ['deleted_at'];
-
     public $fillable = [
         'maturity_date',
         'reference_month',

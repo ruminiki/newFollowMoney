@@ -71,7 +71,6 @@ class MovementDataTable extends DataTable
                 'dom' => 'Bfrtip',
                 'scrollX' => false,
                 'buttons' => [
-                    'print',
                     'reset',
                     'reload',
                     [

@@ -12,13 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class PaymentForm extends Model
 {
-    use SoftDeletes;
-
     public $table = 'payment_forms';
-    
-
-    protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'description',

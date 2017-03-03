@@ -18,7 +18,6 @@ class CreatecategoriesTable extends Migration
             $table->string('description', 100);
             $table->integer('category_superior_id')->unsigned()->nullable();
             $table->integer('user_id')->unsigned();
-            $table->softDeletes();
             $table->timestamps();
             $table->foreign('category_superior_id')->references('id')->on('categories');
             $table->foreign('user_id')->references('id')->on('users');

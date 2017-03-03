@@ -30,7 +30,6 @@ class CreateMovementsTable extends Migration
             $table->integer('credit_card_id')->unsigned()->nullable();
             $table->integer('movement_origin_id')->unsigned()->nullable();
             $table->integer('user_id')->unsigned();
-            $table->softDeletes();
             $table->timestamps();
             $table->foreign('payment_form_id')->references('id')->on('payment_forms');
             $table->foreign('category_id')->references('id')->on('categories');

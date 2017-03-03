@@ -20,7 +20,6 @@ class CreateCreditCardsTable extends Migration
             $table->integer('invoice_day');
             $table->integer('closing_day');
             $table->integer('user_id')->unsigned();
-            $table->softDeletes();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });

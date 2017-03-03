@@ -17,7 +17,6 @@ class CreatePaymentFormsTable extends Migration
             $table->increments('id');
             $table->string('description', 100);
             $table->integer('user_id')->unsigned();
-            $table->softDeletes();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });

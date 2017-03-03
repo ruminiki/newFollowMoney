@@ -28,11 +28,11 @@
                             <td>{{ 'R$ '. number_format($invoice->value, 2, ',', '.') }}</td>
                             <td>{{ 'R$ '. number_format($invoice->amount_paid, 2, ',', '.') }}</td>
                             <td>
-                                <div class="btn-group" style="width:130px;">
+                                <div class="btn-group">
                                     {!! Form::open(['action' => ['CreditCardInvoiceController@destroy', $invoice->id], 'method' => 'delete', 'onsubmit' => 'return confirmDelete()']) !!}
                                     {{ link_to_route('creditCardInvoices.show', 'View', $invoice->id, ['class' => 'btn btn-default   btn-xs']) }}
-                                    {{ Form::button('Pay',['id'=> 'btn_pay', 'class' => 'btn btn-default btn-xs'] ) }}
-                                    {{ Form::button('Unpay',['id'=> 'btn_unpay', 'class' => 'btn btn-default btn-xs'] ) }}
+                                    {{ Form::button('Pay',['id'=> 'btn_pay', 'class' => 'btn btn-default btn-xs', 'onclick'=>'pay()'] ) }}
+                                    {{ Form::button('Unpay',['id'=> 'btn_unpay', 'class' => 'btn btn-default btn-xs', 'onclick'=>'unpay()'] ) }}
                                     {!! Form::submit('Delete',['class'=>'btn btn-danger btn-xs']) !!}
                                     {!! Form::close() !!}
                                 </div>

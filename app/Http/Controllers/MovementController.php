@@ -97,7 +97,7 @@ class MovementController extends AppBaseController
             }else{
                 Log::info("====Add movement to invoice======");
                 try {
-                    $movement->creditCard->addToInvoice($movement);    
+                    $movement->creditCard->addToInvoice($movement);
                 }catch(Exception $e) {
                     return Redirect::back()->withErrors([$e->getMessage()])->withInput();   
                 }

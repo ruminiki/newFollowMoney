@@ -6,15 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap4.min.css"> -->
+    <link href="/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"> -->
+    <link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.3/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.3/css/skins/_all-skins.min.css">
-    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.3/css/AdminLTE.min.css"> -->
+    <link href="/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <link href="/css/_all-skins.min.css" rel="stylesheet" type="text/css" />
+    <!-- <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" /> -->
+
+    <link href="/css/jquery-ui.min.css" rel="Stylesheet" type="text/css" />
+    <link href="/css/responsive.bootstrap.min.css" rel="Stylesheet" type="text/css" />
 
     <link href="/css/app.css" rel="stylesheet">
-    <link href="https://datatables.yajrabox.com/css/datatables.bootstrap.css" rel="stylesheet">
+    <link href="/css/buttons.dataTables.min.css" rel="stylesheet">
+    
+    <!-- <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
 
     @yield('css')
 </head>
@@ -143,13 +152,14 @@
 
     <!-- jQuery 2.1.4 -->
     <!-- <script src="https://code.jquery.com/jquery.js"></script> -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> -->
+    <script src="/js/jquery.min.js" type="text/javascript"></script>
+    <script src="/js/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/js/select2.min.js" type="text/javascript"></script>
+    <script src="/js/icheck.min.js" type="text/javascript"></script>
 
     <!-- AdminLTE App -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.3/js/app.min.js"></script>
+    <script src="/js/app.min.js" type="text/javascript"></script>
 
     @stack('scripts')
 

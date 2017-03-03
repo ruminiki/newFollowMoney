@@ -23,7 +23,6 @@ class CreateCreditCardInvoicesTable extends Migration
             $table->string('status', 20);
             $table->integer('credit_card_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->softDeletes();
             $table->timestamps();
             $table->foreign('credit_card_id')->references('id')->on('credit_cards');
             $table->foreign('user_id')->references('id')->on('users');

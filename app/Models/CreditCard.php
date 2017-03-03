@@ -18,14 +18,7 @@ use Exception;
  */
 class CreditCard extends Model
 {
-    use SoftDeletes;
-
     public $table = 'credit_cards';
-    
-
-    protected $dates = ['deleted_at'];
-
-
     public $fillable = [
         'description',
         'limit',
@@ -104,7 +97,8 @@ class CreditCard extends Model
             Log::info('======== Creating invoice to ' . $movement->creditCard->description . ' ' . $credit_card_invoice->reference_month . '-' . $credit_card_invoice->reference_year);
 
             //create invoice
-            $credit_card_invoice = CreditCardInvoice::create($credit_card_invoice->toArray());
+            $credit_card_invoice->save(); //= CreditCardInvoice::create($credit_card_invoice->toArray());
+            $movement->credit_card_invoice_id = $credit_card_invoice->id;
         }else{
             if ( $credit_card_invoice->isOpen() ){
                 $movement->credit_card_invoice_id = $credit_card_invoice->id;

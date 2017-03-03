@@ -15,6 +15,7 @@ use App\Models\CreditCardInvoice;
 use Auth;
 use Session;
 use Request as _Request;
+use View;
 
 class CreditCardInvoiceController extends AppBaseController
 {
@@ -100,7 +101,10 @@ class CreditCardInvoiceController extends AppBaseController
             return redirect(route('creditCardInvoices.index'));
         }
 
-        return view('creditCardInvoices.show')->with('creditCardInvoice', $creditCardInvoice);
+        return view('creditCardInvoices.show')
+               ->with('creditCardInvoice', $creditCardInvoice)
+               ->with('credits', 0)
+               ->with('debits', 0);
     }
 
     /**
@@ -157,22 +161,22 @@ class CreditCardInvoiceController extends AppBaseController
      */
     public function destroy($id)
     {
-        $creditCardInvoice = $this->creditCardInvoiceRepository->findWithoutFail($id);
+        $invoice = $this->creditCardInvoiceRepository->findWithoutFail($id);
 
-        if (empty($creditCardInvoice)) {
+        if (empty($invoice)) {
             Flash::error('Credit Card Invoice not found');
 
             return redirect(route('creditCardInvoices.index'));
         }
 
-        if ( count($creditCardInvoice->movements) > 0 ){
+        if ( count($invoice->movements) > 0 ){
             Flash::warning('Cannot delete invoice with movements associateds. Pleas remove movements from invoice and try again!');
         }else{
             $this->creditCardInvoiceRepository->delete($id);
             Flash::success('Credit Card Invoice deleted successfully.');
         }
 
-        return redirect(route('creditCards.invoices', ['id'=>$invoice->credit_card_id, 'year'=>Session::get('year_reference')]));
+        return redirect(route('creditCardInvoices.index'));
     }
 
     public function pay($id)
@@ -193,22 +197,14 @@ class CreditCardInvoiceController extends AppBaseController
         }
 
         $invoice->value = $value;
-        $invoice->close();
         $invoice->amount_paid = $value;
+        $invoice->close();
 
         $invoice->save();
 
-        $invoices = CreditCardInvoice::whereRaw('credit_card_id = ? and user_id = ? and reference_year = ?', 
-                            [$invoice->credit_card_id, Auth::id(), Session::get('year_reference')])->get();
+        Flash::success('Successful payment!');
 
-        //Flash::success('Successful payment!');
-
-        if ( _Request::ajax() ){
-            $view = View::make('creditCardInvoices.table',compact('invoices'))->render();
-            return Response::json(array('html' => $view));
-        }else{
-            return redirect(route('creditCardInvoices.index'));    
-        }
+        return redirect(route('creditCards.invoices', ['id'=>$invoice->credit_card_id, 'year'=>Session::get('year_reference')]));
 
     }
 

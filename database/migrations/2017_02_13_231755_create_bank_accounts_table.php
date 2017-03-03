@@ -18,7 +18,6 @@ class CreateBankAccountsTable extends Migration
             $table->string('description', 100);
             $table->string('number', 50);
             $table->integer('user_id')->unsigned();
-            $table->softDeletes();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });
